@@ -1,1 +1,28 @@
-# Hello world
+---
+pageType: home
+
+hero:
+  name: myBlog
+  text: 一位前端开发者的技术探索
+  tagline: 记录成长轨迹 | 分享技术心得 | 欢迎交流指正
+  actions:
+    - theme: brand
+      text: 开始探索
+      link: /guide/
+    - theme: alt
+      text: 联系我
+      link: https://github.com/ChichengL
+  image:
+    src: "https://avatars.githubusercontent.com/u/118503661?v=4"
+    alt: 个人头像
+features:
+  - title: 关于Blog
+    details: 分享关于前端技术栈的学习与实践，内容涵盖 Vue 源码解析、性能优化、工程化实践及日常开发总结
+    icon: 👋
+  - title: 关于作者
+    details: 26届前端练习生 | SWPU_Lec 团队成员（2022.10-至今） | 曾实习于快手风控客服前端团队、字节跳动创意 AI 团队 | 持续探索前端架构与工程化。
+    icon: 🙋‍♂️
+  - title: 技术栈与能力
+    details: 常见框架 React/Vue2/Vue3及其相关生态、webpack/vite、nest等都有涉及
+    icon: 📚️
+---

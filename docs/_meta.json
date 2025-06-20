@@ -1,0 +1,12 @@
+[
+  {
+    "text": "见解分享",
+    "link": "/guide/",
+    "activeMatch": "/guide/"
+  },
+  {
+    "text": "心路历程",
+    "link": "/experience/",
+    "activeMatch": "/experience/"
+  }
+]
