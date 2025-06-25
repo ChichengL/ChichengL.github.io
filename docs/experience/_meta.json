@@ -1,1 +1,15 @@
-["与前端的经历.md"]
+[
+  {
+    "name": "index.md",
+    "label": "首页",
+    "type": "file"
+  },
+  "与前端的经历.md",
+  {
+    "type": "dir",
+    "name": "myLife",
+    "label": "复习",
+    "collapsible": true,
+    "collapsed": true
+  }
+]

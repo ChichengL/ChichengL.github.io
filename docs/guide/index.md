@@ -6,6 +6,8 @@
 - Email: 2560720865@qq.com
 - Name:吃橙不吃陈 | chichengl | 🍊
 
+[学习笔记仓库](https://github.com/ChichengL/All-Notes)
+
 ## 建站的目的
 
 1. 记录学习的过程
