@@ -1,8 +1,7 @@
 [
   {
     "name": "index.md",
-    "label": "首页",
-    "type": "file"
+    "label": "首页"
   },
   "浏览器渲染原理简记.md",
   "TS体操.md",

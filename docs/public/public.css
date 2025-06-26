@@ -10,3 +10,6 @@
     height: 100%;
     object-fit: cover; /* 确保图片填充容器且不变形 */
   }
+.rspress-logo{
+  border-radius: 50%;
+}
