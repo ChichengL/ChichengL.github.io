@@ -1,0 +1,12 @@
+[
+  {
+    "type": "file",
+    "name": "TS体操.md",
+    "label": "TS体操"
+  },
+  {
+    "type": "file",
+    "name": "Promise.md",
+    "label": "Promise相关"
+  }
+]
