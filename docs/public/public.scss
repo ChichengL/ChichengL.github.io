@@ -1,3 +1,4 @@
+@use "sass:math";
 /* 将hero区域图片设置为圆形 */
 .rspress-home-hero-image {
   border-radius: 50%;
@@ -25,9 +26,10 @@
   }
 }
 @keyframes rainbow {
-  @for $i from 0 through 20 {
-    #{percentage($i * 0.05)} {
-      color: hsl(random(360%), 75, 75);
+  @for $i from 1 through 20 {
+    #{math.percentage($i * 0.05)} {
+      // 修复：使用deg单位并简化随机数生成
+      color: hsl(math.random(360) * 1deg, 75%, 75%);
     }
   }
 }
