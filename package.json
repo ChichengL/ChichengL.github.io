@@ -13,7 +13,8 @@
   "license": "ISC",
   "devDependencies": {
     "@types/react": "^19.1.8",
-    "rspress": "^1.44.0"
+    "rspress": "^1.44.0",
+    "sass": "^1.89.2"
   },
   "dependencies": {
     "react": "^19.1.0",

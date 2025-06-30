@@ -1,0 +1,33 @@
+/* 将hero区域图片设置为圆形 */
+.rspress-home-hero-image {
+  border-radius: 50%;
+  overflow: hidden;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1); /* 可选：添加阴影效果 */
+}
+
+.rspress-home-hero-image img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover; /* 确保图片填充容器且不变形 */
+}
+.rspress-logo {
+  border-radius: 50%;
+}
+
+.rainbow {
+  letter-spacing: 0.2rem;
+  font-size: 1.2rem;
+  font-family: Lato, serif;
+  text-transform: uppercase;
+
+  span {
+    animation: rainbow 50s alternate infinite forwards;
+  }
+}
+@keyframes rainbow {
+  @for $i from 0 through 20 {
+    #{percentage($i * 0.05)} {
+      color: hsl(random(360%), 75, 75);
+    }
+  }
+}
