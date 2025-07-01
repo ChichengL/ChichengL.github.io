@@ -18,6 +18,15 @@
   },
   "dependencies": {
     "react": "^19.1.0",
-    "react-dom": "^19.1.0"
+    "react-dom": "^19.1.0",
+    "rspress-plugin-align-image": "^0.3.0",
+    "rspress-plugin-file-tree": "^0.4.0",
+    "rspress-plugin-katex": "^0.3.0",
+    "rspress-plugin-live2d": "^0.3.0",
+    "rspress-plugin-mermaid": "^0.3.0",
+    "rspress-plugin-reading-time": "^0.3.0",
+    "rspress-plugin-sitemap": "^1.1.2",
+    "rspress-plugin-supersub": "^0.3.0",
+    "rspress-plugin-vercel-analytics": "^0.3.0"
   }
 }

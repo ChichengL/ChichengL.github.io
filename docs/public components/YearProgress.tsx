@@ -1,6 +1,6 @@
 import React, { useEffect, useRef } from "react";
 import "../public/public.scss";
-// 计算 今年 年已过天数和剩余天数、进度
+
 function getYearProgress() {
   const thisYear = new Date().getFullYear();
   const startOfYear = new Date(thisYear, 0, 1); // xxxx 年 1 月 1 日 00:00:00
@@ -18,6 +18,7 @@ function getYearProgress() {
 export default function YearProgress() {
   const { daysPassed, progress, daysRemaining, thisYear } = getYearProgress();
   const ref = useRef<HTMLDivElement>(null);
+
   useEffect(() => {
     if (!ref.current) return;
     let letters = ref.current?.textContent?.split("") || [];
@@ -29,14 +30,16 @@ export default function YearProgress() {
       ref.current?.append(span);
     });
   }, []);
+
   return (
     <div
       style={{
         width: "400px",
-        backgroundColor: "#f7f7f7",
+        backgroundColor: "var(--year-progress-bg)", // 使用CSS变量
         borderRadius: "16px",
         padding: "16px",
         margin: "auto",
+        color: "var(--year-progress-text)", // 使用CSS变量
       }}
     >
       <div
@@ -51,13 +54,19 @@ export default function YearProgress() {
       >
         {thisYear} Progress Bar
       </div>
-      <p style={{ fontSize: "14px", color: "#666", textAlign: "center" }}>
+      <p
+        style={{
+          fontSize: "14px",
+          color: "var(--year-progress-secondary-text)", // 使用CSS变量
+          textAlign: "center",
+        }}
+      >
         📅 Today is {new Date().toLocaleDateString()}
       </p>
       <div
         style={{
           height: "12px",
-          backgroundColor: "#ddd",
+          backgroundColor: "var(--year-progress-bar-bg)", // 使用CSS变量
           borderRadius: "4px",
           overflow: "hidden",
           marginTop: "8px",
@@ -67,7 +76,7 @@ export default function YearProgress() {
           style={{
             height: "100%",
             width: `${progress}%`,
-            backgroundColor: "#bfa",
+            backgroundColor: "var(--year-progress-fill)", // 使用CSS变量
             transition: "width 0.3s ease",
           }}
         />
@@ -85,7 +94,7 @@ export default function YearProgress() {
       </p>
       <div
         style={{
-          backgroundColor: "#e4e4e4",
+          backgroundColor: "var(--year-progress-stats-bg)", // 使用CSS变量
           padding: "8px",
           borderRadius: "8px",
           display: "flex",
@@ -99,6 +108,7 @@ export default function YearProgress() {
             fontSize: "14px",
             textAlign: "center",
             fontWeight: 600,
+            color: "var(--year-progress-stats-text)", // 使用CSS变量
           }}
         >
           {daysPassed} days have passed
@@ -109,6 +119,7 @@ export default function YearProgress() {
             fontSize: "14px",
             textAlign: "center",
             fontWeight: 600,
+            color: "var(--year-progress-stats-text)", // 使用CSS变量
           }}
         >
           {daysRemaining} days remaining ✨
@@ -118,7 +129,7 @@ export default function YearProgress() {
         style={{
           marginTop: "12px",
           fontSize: "14px",
-          color: "#999",
+          color: "var(--year-progress-footer-text)", // 使用CSS变量
           textAlign: "center",
           fontStyle: "italic",
         }}

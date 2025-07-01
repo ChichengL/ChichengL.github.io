@@ -1,0 +1,41 @@
+@use "sass:math";
+
+.rainbow {
+  letter-spacing: 0.2rem;
+  font-size: 1.2rem;
+  font-family: Lato, serif;
+  text-transform: uppercase;
+
+  span {
+    animation: rainbow 50s alternate infinite forwards;
+  }
+}
+@keyframes rainbow {
+  @for $i from 1 through 20 {
+    #{math.percentage($i * 0.05)} {
+      // 修复：使用deg单位并简化随机数生成
+      color: hsl(math.random(360) * 1deg, 75%, 75%);
+    }
+  }
+}
+:root {
+  --year-progress-bg: #f7f7f7;
+  --year-progress-text: #333;
+  --year-progress-secondary-text: #666;
+  --year-progress-bar-bg: #ddd;
+  --year-progress-fill: #bfa;
+  --year-progress-stats-bg: #e4e4e4;
+  --year-progress-stats-text: #333;
+  --year-progress-footer-text: #999;
+}
+
+:root.dark {
+  --year-progress-bg: #333;
+  --year-progress-text: #fff;
+  --year-progress-secondary-text: #ddd;
+  --year-progress-bar-bg: #555;
+  --year-progress-fill: #5a5;
+  --year-progress-stats-bg: #444;
+  --year-progress-stats-text: #eee;
+  --year-progress-footer-text: #ccc;
+}
