@@ -9,5 +9,6 @@ export default defineConfig({
   icon: "https://avatars.githubusercontent.com/u/118503661?v=4",
   themeConfig: {
     lastUpdated: true,
+    outlineTitle: "页面导航",
   },
 });

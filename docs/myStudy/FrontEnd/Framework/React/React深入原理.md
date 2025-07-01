@@ -17,24 +17,24 @@ React Hooks 的核心原理可以概括为：
 
 在 React 的 Fiber 架构中，每个函数组件对应一个 Fiber 节点。Fiber 节点上的 `memoizedState` 属性用于存储该组件中所有 Hooks 的信息。这些 Hooks 以链表的形式存储，通过 `next` 属性串联起来。
 
-```JavaScript
+```ts
 // Fiber 节点结构（简化版）
 const fiber = {
   // ...其他属性
   memoizedState: null, // 指向第一个 Hook
-  updateQueue:{
-      firstEffect:null,
-      lastEffect:null,
-  }
+  updateQueue: {
+    firstEffect: null,
+    lastEffect: null,
+  },
 };
 
 // Hook 对象结构（简化版）
 const hook = {
   memoizedState: null, // Hook 自身的状态
-  baseState: null,     // 基础状态
-  queue: null,         // 更新队列
-  baseQueue: null,     // 基础更新队列
-  next: null,          // 指向下一个 Hook
+  baseState: null, // 基础状态
+  queue: null, // 更新队列
+  baseQueue: null, // 基础更新队列
+  next: null, // 指向下一个 Hook
 };
 ```
 
@@ -42,7 +42,7 @@ const hook = {
 
 存在一个组件 A，其内部如下所示
 
-```TypeScript
+```ts
 function A(ref) {
   const [state1, setState1] = useState(0);
   useEffect(() => {
@@ -52,7 +52,8 @@ function A(ref) {
     };
   }, []);
   const divRef = useRef();
-  const computedState = useMemo(() => { // 修正拼写错误
+  const computedState = useMemo(() => {
+    // 修正拼写错误
     return state1 * 3;
   }, [state1]);
   const handleClick = useCallback(() => {
@@ -75,16 +76,16 @@ function A(ref) {
           state1,
           state2,
         },
-        divRef
+        divRef,
       };
     },
     [state1, state2]
   );
 
   useLayoutEffect(() => {
-    console.log('useLayoutEffect');
+    console.log("useLayoutEffect");
     return () => {
-      console.log('useLayoutEffect deps update or A destory');
+      console.log("useLayoutEffect deps update or A destory");
     };
   }, [state1]);
   return (
@@ -99,7 +100,7 @@ function A(ref) {
 
 其对应的 Fiber 结构应该如下所示
 
-```TypeScript
+```ts
 FiberNode {
   type: A,
   stateNode: null,
@@ -281,7 +282,7 @@ Hooks 链表结构示意图：
 
 React Hooks 利用 JavaScript 的闭包特性来保存状态。在组件的多次渲染之间，通过闭包环境保留了 Hook 对象及其内部的状态值和更新队列。
 
-```JavaScript
+```jsx
 // 简化版的 useState 实现原理
 function useState(initialState) {
   const currentHook = getCurrentHook(); // 获取当前 Hook
@@ -289,9 +290,10 @@ function useState(initialState) {
   if (isMount) {
     // 首次渲染，创建 Hook 对象
     const hook = {
-      memoizedState: typeof initialState === 'function' ? initialState() : initialState,
+      memoizedState:
+        typeof initialState === "function" ? initialState() : initialState,
       queue: { pending: null },
-      next: null
+      next: null,
     };
 
     // 将 Hook 添加到链表
@@ -301,7 +303,10 @@ function useState(initialState) {
       workInProgressHook = workInProgressHook.next = hook;
     }
 
-    return [hook.memoizedState, dispatchAction.bind(null, currentlyRenderingFiber, hook.queue)];
+    return [
+      hook.memoizedState,
+      dispatchAction.bind(null, currentlyRenderingFiber, hook.queue),
+    ];
   } else {
     // 更新阶段，获取已存在的 Hook
     const hook = workInProgressHook;
@@ -317,7 +322,10 @@ function useState(initialState) {
 
     hook.memoizedState = newState;
 
-    return [newState, dispatchAction.bind(null, currentlyRenderingFiber, hook.queue)];
+    return [
+      newState,
+      dispatchAction.bind(null, currentlyRenderingFiber, hook.queue),
+    ];
   }
 }
 ```
@@ -359,25 +367,25 @@ useState 工作流程：
 3. **创建 dispatch 函数**：创建一个与特定 Hook 绑定的 `setState` 函数
 4. **处理更新**：当调用 `setState` 时，创建更新对象并加入更新队列，然后调度重新渲染
 
-```JavaScript
+```jsx
 // useState 的简化实现
 function useState(initialState) {
   return useReducer(basicStateReducer, initialState);
 }
 
 function basicStateReducer(state, action) {
-  return typeof action === 'function' ? action(state) : action;
+  return typeof action === "function" ? action(state) : action;
 }
 ```
 
 当调用 `setState` 函数时，React 会创建一个更新对象并将其添加到更新队列中：
 
-```JavaScript
+```jsx
 function dispatchAction(fiber, queue, action) {
   // 创建更新对象
   const update = {
     action,
-    next: null
+    next: null,
   };
 
   // 将更新对象添加到循环链表中
@@ -399,33 +407,33 @@ function dispatchAction(fiber, queue, action) {
 
 React 会对状态更新进行批处理，以提高性能。在 React 18 之前，只有在 React 事件处理函数中的多次 `setState` 调用会被批处理。而在 React 18 中，所有的状态更新都会自动批处理，无论它们来自哪里（事件处理函数、Promise、setTimeout 等）。
 
-```JavaScript
+```jsx
 // React 18 之前
 function handleClick() {
-  setCount(c => c + 1); // 触发重新渲染
-  setFlag(f => !f);     // 触发重新渲染
+  setCount((c) => c + 1); // 触发重新渲染
+  setFlag((f) => !f); // 触发重新渲染
 }
 
 // React 18
 function handleClick() {
-  setCount(c => c + 1); // 不会立即触发重新渲染
-  setFlag(f => !f);     // 不会立即触发重新渲染
+  setCount((c) => c + 1); // 不会立即触发重新渲染
+  setFlag((f) => !f); // 不会立即触发重新渲染
   // 两次更新会被批处理，只触发一次重新渲染
 }
 ```
 
 注意：在某些情况下，你可能需要使用 `flushSync` 来强制同步更新并禁用批处理：
 
-```JavaScript
-import { flushSync } from 'react-dom';
+```jsx
+import { flushSync } from "react-dom";
 
 function handleClick() {
   flushSync(() => {
-    setCount(c => c + 1); // 立即触发重新渲染
+    setCount((c) => c + 1); // 立即触发重新渲染
   });
   // DOM 已更新
   flushSync(() => {
-    setFlag(f => !f); // 立即触发重新渲染
+    setFlag((f) => !f); // 立即触发重新渲染
   });
   // DOM 已更新
 }
@@ -435,7 +443,7 @@ function handleClick() {
 
 当使用 `setState` 更新状态时，可以传入一个值或一个函数。使用函数式更新可以避免闭包陷阱：
 
-```JavaScript
+```jsx
 // 可能存在闭包陷阱
 function Counter() {
   const [count, setCount] = useState(0);
@@ -466,7 +474,7 @@ function Counter() {
     for (let i = 0; i < 3; i++) {
       setTimeout(() => {
         // ✅ 函数式更新：`prevCount` 始终是最新状态
-        setCount(prevCount => prevCount + 1);
+        setCount((prevCount) => prevCount + 1);
       }, 1000);
     }
   };
@@ -526,7 +534,7 @@ useEffect 执行时机示意图：
 4. **执行副作用**：在 commit 阶段之后异步执行副作用函数
 5. **执行清理函数**：在下一次执行副作用之前或组件卸载时执行清理函数
 
-```JavaScript
+```jsx
 // useEffect 的简化实现
 function useEffect(create, deps) {
   const hook = updateWorkInProgressHook();
@@ -585,16 +593,16 @@ function areHookInputsEqual(nextDeps, prevDeps) {
 
 **useEffect 示例:**
 
-```JavaScript
+```jsx
 // useEffect 示例
 useEffect(() => {
   // 这里的代码会在浏览器完成绘制后异步执行
-  console.log('Effect executed');
+  console.log("Effect executed");
 
   return () => {
     // 清理函数会在下一次执行副作用之前
     // 或组件卸载时执行
-    console.log('Cleanup executed');
+    console.log("Cleanup executed");
   };
 }, [dependency]);
 ```
@@ -712,7 +720,7 @@ sequenceDiagram
 
 **useLayoutEffect 示例:**
 
-```JavaScript
+```jsx
 // useLayoutEffect 示例
 useLayoutEffect(() => {
   // 这里的代码会在 DOM 更新后、浏览器绘制前同步执行
@@ -749,7 +757,7 @@ useLayoutEffect(() => {
 2. `useLayoutEffect` 的副作用在 commit 阶段的 `commitLayoutEffects` 函数中同步执行
 3. `useEffect` 的副作用在 commit 阶段结束后通过 scheduler 异步调度执行
 
-```JavaScript
+```jsx
 // useLayoutEffect 的简化实现
 function useLayoutEffect(create, deps) {
   const hook = updateWorkInProgressHook();
@@ -819,7 +827,7 @@ function useLayoutEffect(create, deps) {
 3. 如果依赖项没有变化，直接返回缓存的值或函数
 4. 如果依赖项变化，重新执行函数并更新缓存
 
-```JavaScript
+```jsx
 // useMemo 的简化实现
 function useMemo(nextCreate, deps) {
   const hook = updateWorkInProgressHook();
@@ -853,17 +861,17 @@ function useCallback(callback, deps) {
 
 `useMemo` 用于缓存计算结果，特别是计算成本较高的操作：
 
-```JavaScript
+```jsx
 // 不使用 useMemo
 function ProductList({ products, filterText }) {
   // 每次渲染都会重新计算，即使 products 和 filterText 没有变化
-  const filteredProducts = products.filter(product =>
+  const filteredProducts = products.filter((product) =>
     product.name.includes(filterText)
   );
 
   return (
     <ul>
-      {filteredProducts.map(product => (
+      {filteredProducts.map((product) => (
         <li key={product.id}>{product.name}</li>
       ))}
     </ul>
@@ -874,14 +882,12 @@ function ProductList({ products, filterText }) {
 function ProductList({ products, filterText }) {
   // 只有当 products 或 filterText 变化时才会重新计算
   const filteredProducts = useMemo(() => {
-    return products.filter(product =>
-      product.name.includes(filterText)
-    );
+    return products.filter((product) => product.name.includes(filterText));
   }, [products, filterText]);
 
   return (
     <ul>
-      {filteredProducts.map(product => (
+      {filteredProducts.map((product) => (
         <li key={product.id}>{product.name}</li>
       ))}
     </ul>
@@ -893,12 +899,12 @@ function ProductList({ products, filterText }) {
 
 `useCallback` 用于缓存函数引用，特别是当函数作为 props 传递给子组件时：
 
-```JavaScript
+```jsx
 // 不使用 useCallback
 function ParentComponent({ id }) {
   // 每次渲染都会创建新的函数引用
   const handleClick = () => {
-    console.log('Clicked item:', id);
+    console.log("Clicked item:", id);
   };
 
   return <ChildComponent onClick={handleClick} />;
@@ -908,7 +914,7 @@ function ParentComponent({ id }) {
 function ParentComponent({ id }) {
   // 只有当 id 变化时才会创建新的函数引用
   const handleClick = useCallback(() => {
-    console.log('Clicked item:', id);
+    console.log("Clicked item:", id);
   }, [id]);
 
   return <ChildComponent onClick={handleClick} />;
@@ -919,10 +925,10 @@ function ParentComponent({ id }) {
 
 `useMemo` 和 `useCallback` 通常与 `React.memo` 结合使用，以防止子组件不必要的重新渲染：
 
-```JavaScript
+```jsx
 // 子组件使用 React.memo 进行记忆化
 const ChildComponent = React.memo(function ChildComponent({ onClick }) {
-  console.log('Child component rendered');
+  console.log("Child component rendered");
   return <button onClick={onClick}>Click me</button>;
 });
 
@@ -933,7 +939,7 @@ function ParentComponent() {
   // 如果不使用 useCallback，每次 count 变化导致父组件重新渲染时，
   // 都会创建新的 handleClick 函数，导致 ChildComponent 也重新渲染
   const handleClick = useCallback(() => {
-    console.log('Button clicked');
+    console.log("Button clicked");
   }, []); // 空依赖数组，函数引用永远不变
 
   return (
@@ -988,7 +994,7 @@ function ParentComponent() {
 1. 在首次渲染时，创建一个包含 `current` 属性的对象，并将其存储在 Hook 的 `memoizedState` 中
 2. 在后续渲染时，直接返回存储的对象
 
-```JavaScript
+```jsx
 // useRef 的简化实现
 function useRef(initialValue) {
   const hook = updateWorkInProgressHook();
@@ -1012,7 +1018,7 @@ function useRef(initialValue) {
 - `useRef` 在组件的整个生命周期内返回同一个 ref 对象
 - `React.createRef` 在每次渲染时都会创建一个新的 ref 对象
 
-```JavaScript
+```jsx
 function Component() {
   // 在组件的整个生命周期内，useRef 返回同一个对象
   const refFromUseRef = useRef(null);
@@ -1021,8 +1027,11 @@ function Component() {
   const refFromCreateRef = React.createRef();
 
   // 日志输出
-  console.log('useRef 相同吗?', refFromUseRef === Component.prevRefFromUseRef);
-  console.log('createRef 相同吗?', refFromCreateRef === Component.prevRefFromCreateRef);
+  console.log("useRef 相同吗?", refFromUseRef === Component.prevRefFromUseRef);
+  console.log(
+    "createRef 相同吗?",
+    refFromCreateRef === Component.prevRefFromCreateRef
+  );
 
   // 保存当前的 ref 对象以供下次比较
   Component.prevRefFromUseRef = refFromUseRef;
@@ -1036,7 +1045,7 @@ function Component() {
 
 **1. 访问 DOM 元素**
 
-```JavaScript
+```jsx
 function TextInputWithFocusButton() {
   const inputRef = useRef(null);
 
@@ -1056,7 +1065,7 @@ function TextInputWithFocusButton() {
 
 **2. 保存前一个值**
 
-```JavaScript
+```jsx
 function Counter() {
   const [count, setCount] = useState(0);
   const prevCountRef = useRef();
@@ -1070,7 +1079,9 @@ function Counter() {
 
   return (
     <div>
-      <p>当前值: {count}, 前一个值: {prevCount !== undefined ? prevCount : '无'}</p>
+      <p>
+        当前值: {count}, 前一个值: {prevCount !== undefined ? prevCount : "无"}
+      </p>
       <button onClick={() => setCount(count + 1)}>增加</button>
     </div>
   );
@@ -1079,7 +1090,7 @@ function Counter() {
 
 **3. 存储不需要触发重新渲染的值**
 
-```JavaScript
+```jsx
 function IntervalCounter() {
   const [count, setCount] = useState(0);
   const intervalRef = useRef(null);
@@ -1087,7 +1098,7 @@ function IntervalCounter() {
   useEffect(() => {
     // 设置定时器并保存 ID
     intervalRef.current = setInterval(() => {
-      setCount(c => c + 1);
+      setCount((c) => c + 1);
     }, 1000);
 
     return () => {
@@ -1107,7 +1118,7 @@ function IntervalCounter() {
 
 **4. 解决闭包陷阱**
 
-```JavaScript
+```jsx
 function CounterWithRef() {
   const [count, setCount] = useState(0);
   const countRef = useRef(count);
@@ -1120,7 +1131,7 @@ function CounterWithRef() {
   const handleAlertClick = () => {
     setTimeout(() => {
       // 使用 ref 获取最新值，而不是闭包中捕获的旧值
-      alert('当前计数: ' + countRef.current);
+      alert("当前计数: " + countRef.current);
     }, 3000);
   };
 
@@ -1169,7 +1180,7 @@ function CounterWithRef() {
 2. 订阅上下文的变化
 3. 当上下文值变化时，触发使用该上下文的组件重新渲染
 
-```JavaScript
+```jsx
 // useContext 的简化实现
 function useContext(Context) {
   const contextValue = readContext(Context);
@@ -1193,19 +1204,19 @@ React 的上下文系统由三部分组成：
 
 当 Provider 的 `value` 属性变化时，所有使用该上下文的后代组件都会重新渲染。
 
-```JavaScript
+```jsx
 // 创建上下文
-const ThemeContext = React.createContext('light');
+const ThemeContext = React.createContext("light");
 
 // 提供上下文值
 function App() {
-  const [theme, setTheme] = useState('light');
+  const [theme, setTheme] = useState("light");
 
   return (
     <ThemeContext.Provider value={theme}>
       <div>
         <ThemedButton />
-        <button onClick={() => setTheme(theme === 'light' ? 'dark' : 'light')}>
+        <button onClick={() => setTheme(theme === "light" ? "dark" : "light")}>
           切换主题
         </button>
       </div>
@@ -1218,7 +1229,12 @@ function ThemedButton() {
   const theme = useContext(ThemeContext);
 
   return (
-    <button style={{ background: theme === 'light' ? '#fff' : '#333', color: theme === 'light' ? '#333' : '#fff' }}>
+    <button
+      style={{
+        background: theme === "light" ? "#fff" : "#333",
+        color: theme === "light" ? "#333" : "#fff",
+      }}
+    >
       我是一个 {theme} 主题的按钮
     </button>
   );
@@ -1233,14 +1249,14 @@ function ThemedButton() {
 2. **使用 React.memo**：对不依赖变化上下文的组件进行记忆化
 3. **优化上下文值**：使用 `useMemo` 缓存上下文值，避免不必要的重新渲染
 
-```JavaScript
+```jsx
 // 拆分上下文
-const ThemeContext = React.createContext('light');
+const ThemeContext = React.createContext("light");
 const UserContext = React.createContext(null);
 
 // 优化上下文值
 function ThemeProvider({ children }) {
-  const [theme, setTheme] = useState('light');
+  const [theme, setTheme] = useState("light");
 
   // 使用 useMemo 缓存上下文值
   const themeContextValue = useMemo(() => {
@@ -1259,16 +1275,16 @@ function ThemeProvider({ children }) {
 
 `useContext` 经常与 `useReducer` 结合使用，实现类似 Redux 的状态管理：
 
-```JavaScript
+```jsx
 // 创建上下文
 const CounterContext = React.createContext(null);
 
 // 定义 reducer
 function counterReducer(state, action) {
   switch (action.type) {
-    case 'increment':
+    case "increment":
       return { count: state.count + 1 };
-    case 'decrement':
+    case "decrement":
       return { count: state.count - 1 };
     default:
       throw new Error(`未知的 action 类型: ${action.type}`);
@@ -1293,8 +1309,8 @@ function Counter() {
   return (
     <div>
       <p>计数: {state.count}</p>
-      <button onClick={() => dispatch({ type: 'increment' })}>增加</button>
-      <button onClick={() => dispatch({ type: 'decrement' })}>减少</button>
+      <button onClick={() => dispatch({ type: "increment" })}>增加</button>
+      <button onClick={() => dispatch({ type: "decrement" })}>减少</button>
     </div>
   );
 }
@@ -1327,12 +1343,12 @@ function App() {
 
 提示：创建自定义 Hook 来简化上下文的使用
 
-```JavaScript
+```jsx
 // 自定义 Hook
 function useTheme() {
   const context = useContext(ThemeContext);
   if (context === undefined) {
-    throw new Error('useTheme 必须在 ThemeProvider 内部使用');
+    throw new Error("useTheme 必须在 ThemeProvider 内部使用");
   }
   return context;
 }
@@ -1364,7 +1380,7 @@ function ThemedButton() {
 2. 将这个值赋给传入的 ref 的 `current` 属性
 3. 只有当依赖项变化时，才会重新生成实例值
 
-```JavaScript
+```jsx
 // useImperativeHandle 的简化实现
 function useImperativeHandle(ref, create, deps) {
   const hook = updateWorkInProgressHook();
@@ -1393,23 +1409,27 @@ function useImperativeHandle(ref, create, deps) {
 
 `useImperativeHandle` 通常与 `forwardRef` 一起使用，以便父组件可以获取子组件的引用：
 
-```JavaScript
+```jsx
 // 使用 forwardRef 和 useImperativeHandle
 const FancyInput = React.forwardRef((props, ref) => {
   const inputRef = useRef(null);
 
   // 自定义暴露给父组件的实例值
-  useImperativeHandle(ref, () => ({
-    focus: () => {
-      inputRef.current.focus();
-    },
-    getValue: () => {
-      return inputRef.current.value;
-    },
-    setValue: (value) => {
-      inputRef.current.value = value;
-    }
-  }), []);
+  useImperativeHandle(
+    ref,
+    () => ({
+      focus: () => {
+        inputRef.current.focus();
+      },
+      getValue: () => {
+        return inputRef.current.value;
+      },
+      setValue: (value) => {
+        inputRef.current.value = value;
+      },
+    }),
+    []
+  );
 
   return <input ref={inputRef} />;
 });
@@ -1421,8 +1441,8 @@ function Parent() {
   const handleClick = () => {
     // 调用子组件暴露的方法
     fancyInputRef.current.focus();
-    fancyInputRef.current.setValue('Hello from parent!');
-    console.log('当前值:', fancyInputRef.current.getValue());
+    fancyInputRef.current.setValue("Hello from parent!");
+    console.log("当前值:", fancyInputRef.current.getValue());
   };
 
   return (
@@ -1438,16 +1458,20 @@ function Parent() {
 
 与其他 Hooks 类似，`useImperativeHandle` 的第三个参数是一个依赖项数组。只有当依赖项变化时，才会重新创建实例值：
 
-```JavaScript
+```jsx
 // 带依赖项的 useImperativeHandle
 const Counter = React.forwardRef((props, ref) => {
   const [count, setCount] = useState(0);
 
   // 只有当 count 变化时，才会更新暴露的实例值
-  useImperativeHandle(ref, () => ({
-    getCount: () => count,
-    increment: () => setCount(count + 1)
-  }), [count]); // 依赖于 count
+  useImperativeHandle(
+    ref,
+    () => ({
+      getCount: () => count,
+      increment: () => setCount(count + 1),
+    }),
+    [count]
+  ); // 依赖于 count
 
   return (
     <div>
@@ -1511,27 +1535,28 @@ Diff 算法工作流程：
 
 基于这些假设，React 实现了高效的 Diff 算法，主要包括三个层面的比较：Tree Diff、Component Diff 和 Element Diff。
 
-```JavaScript
+```jsx
 // 虚拟 DOM 节点的简化结构
 const vNode = {
-  type: 'div', // 元素类型
-  props: {     // 属性
-    className: 'container',
+  type: "div", // 元素类型
+  props: {
+    // 属性
+    className: "container",
     children: [
       {
-        type: 'h1',
+        type: "h1",
         props: {
-          children: 'Hello, World!'
-        }
+          children: "Hello, World!",
+        },
       },
       {
-        type: 'p',
+        type: "p",
         props: {
-          children: 'This is a paragraph.'
-        }
-      }
-    ]
-  }
+          children: "This is a paragraph.",
+        },
+      },
+    ],
+  },
 };
 ```
 
@@ -1551,7 +1576,7 @@ Tree Diff 示意图：
 
 **示例代码**：
 
-```JavaScript
+```jsx
 // 旧虚拟 DOM
 const oldVirtualDOM = (
   <div>
@@ -1596,7 +1621,7 @@ Component Diff 示意图：
 
 **示例代码**：
 
-```JavaScript
+```jsx
 // 旧虚拟 DOM
 const oldVirtualDOM = (
   <div>
@@ -1624,7 +1649,7 @@ const newVirtualDOM = (
 
 对于同类型的组件，React 提供了 `shouldComponentUpdate`（类组件）和 `React.memo`（函数组件）来优化性能。如果这些方法返回 `false`，React 会跳过该组件及其子组件的比较过程。
 
-```JavaScript
+```jsx
 // 类组件优化
 class PureCounter extends React.Component {
   shouldComponentUpdate(nextProps, nextState) {
@@ -1659,7 +1684,7 @@ Element Diff 示意图：
 
 如果不使用 `key`，React 会按照元素在数组中的索引进行比较，这可能导致不必要的 DOM 操作：
 
-```JavaScript
+```jsx
 // 旧虚拟 DOM
 const oldVirtualDOM = (
   <ul>
@@ -1691,7 +1716,7 @@ const newVirtualDOM = (
 
 使用 `key` 属性可以帮助 React 更准确地识别元素，减少不必要的 DOM 操作：
 
-```JavaScript
+```jsx
 // 旧虚拟 DOM
 const oldVirtualDOM = (
   <ul>
@@ -1725,12 +1750,12 @@ const newVirtualDOM = (
 2. 最好使用数据的唯一标识符作为 `key`，如 ID
 3. 如果没有唯一标识符，可以使用项目的索引作为 `key`，但这可能导致性能问题
 
-```JavaScript
+```jsx
 // 好的做法：使用唯一 ID 作为 key
 function TodoList({ todos }) {
   return (
     <ul>
-      {todos.map(todo => (
+      {todos.map((todo) => (
         <li key={todo.id}>{todo.text}</li>
       ))}
     </ul>
@@ -1768,7 +1793,7 @@ function TodoList({ todos }) {
 
 `React.memo`（函数组件）和 `shouldComponentUpdate`（类组件）可以避免不必要的渲染：
 
-```JavaScript
+```jsx
 // 使用 React.memo 优化函数组件
 const MemoizedComponent = React.memo(function MyComponent(props) {
   // 只有当 props 变化时才会重新渲染
@@ -1792,7 +1817,7 @@ class OptimizedComponent extends React.Component {
 
 `React.PureComponent` 是 `React.Component` 的一个变体，它实现了 `shouldComponentUpdate` 方法，对 props 和 state 进行浅比较：
 
-```JavaScript
+```jsx
 // 使用 PureComponent
 class PureCounterComponent extends React.PureComponent {
   render() {
@@ -1805,15 +1830,13 @@ class PureCounterComponent extends React.PureComponent {
 
 正确使用 `key` 属性可以帮助 React 更高效地更新 DOM：
 
-```JavaScript
+```jsx
 // 使用稳定的唯一标识符作为 key
 function UserList({ users }) {
   return (
     <ul>
-      {users.map(user => (
-        <li key={user.id}>
-          {user.name}
-        </li>
+      {users.map((user) => (
+        <li key={user.id}>{user.name}</li>
       ))}
     </ul>
   );
@@ -1828,15 +1851,15 @@ function UserList({ users }) {
 2. **使用 useMemo 和 useCallback**：缓存计算结果和回调函数，避免不必要的重新计算和渲染
 3. **避免在渲染函数中创建新对象或函数**：每次创建新的引用会导致子组件重新渲染
 
-```JavaScript
+```jsx
 // 不好的做法：每次渲染都创建新的对象
 function BadComponent({ data }) {
   // 每次渲染都会创建一个新的样式对象，导致子组件重新渲染
-  const style = { color: 'red', fontSize: '16px' };
+  const style = { color: "red", fontSize: "16px" };
 
   // 每次渲染都会创建一个新的函数引用
   const handleClick = () => {
-    console.log('Clicked');
+    console.log("Clicked");
   };
 
   return <ChildComponent style={style} onClick={handleClick} data={data} />;
@@ -1845,11 +1868,11 @@ function BadComponent({ data }) {
 // 好的做法：使用 useMemo 和 useCallback 缓存对象和函数
 function GoodComponent({ data }) {
   // 只有当依赖项变化时才会创建新的样式对象
-  const style = useMemo(() => ({ color: 'red', fontSize: '16px' }), []);
+  const style = useMemo(() => ({ color: "red", fontSize: "16px" }), []);
 
   // 只有当依赖项变化时才会创建新的函数引用
   const handleClick = useCallback(() => {
-    console.log('Clicked');
+    console.log("Clicked");
   }, []);
 
   return <ChildComponent style={style} onClick={handleClick} data={data} />;
@@ -1860,7 +1883,7 @@ function GoodComponent({ data }) {
 
 使用不可变数据可以简化比较过程，提高性能：
 
-```JavaScript
+```jsx
 // 不好的做法：直接修改对象
 function BadUpdateComponent({ user }) {
   const handleUpdateName = (newName) => {
@@ -1925,7 +1948,7 @@ React vs Vue3 Diff 算法对比图：
 
 React 的列表对比算法相对简单，它从左到右遍历新旧列表，使用 `key` 属性识别节点。当发现节点位置变化时，React 会移动节点。
 
-```JavaScript
+```jsx
 // React 的列表对比示例
 // 旧列表：A, B, C, D
 // 新列表：B, C, E, A
@@ -1945,7 +1968,7 @@ React 的列表对比算法相对简单，它从左到右遍历新旧列表，�
 
 Vue 3 使用双端比较算法，同时从列表的两端向中间比较。这种方法可以减少节点移动的次数。
 
-```JavaScript
+```jsx
 // Vue 3 的列表对比示例
 // 旧列表：A, B, C, D
 // 新列表：B, C, E, A
@@ -1976,7 +1999,7 @@ Vue 3 使用双端比较算法，同时从列表的两端向中间比较。这�
 - 静态节点在首次渲染后会被缓存，不参与后续的 Diff 过程
 - Vue 3 使用 Proxy 进行细粒度的响应式追踪，只更新实际变化的部分
 
-```JavaScript
+```jsx
 // Vue 3 的静态优化示例
 // 模板
 <template>
@@ -1984,16 +2007,14 @@ Vue 3 使用双端比较算法，同时从列表的两端向中间比较。这�
     <h1>静态标题</h1>
     <p>{{ dynamicContent }}</p>
   </div>
-</template>
+</template>;
 
 // 编译后的渲染函数（简化版）
 function render() {
-  return (
-    _createBlock("div", null, [
-      _createVNode("h1", null, "静态标题", PatchFlags.HOISTED), // 静态节点，被提升
-      _createVNode("p", null, _toDisplayString(dynamicContent), PatchFlags.TEXT) // 动态节点，只更新文本
-    ])
-  )
+  return _createBlock("div", null, [
+    _createVNode("h1", null, "静态标题", PatchFlags.HOISTED), // 静态节点，被提升
+    _createVNode("p", null, _toDisplayString(dynamicContent), PatchFlags.TEXT), // 动态节点，只更新文本
+  ]);
 }
 ```
 
@@ -2023,9 +2044,9 @@ React 18 引入了并发渲染的概念，这对 Diff 算法也有影响：
 
 这些特性使 React 能够在保持响应性的同时处理复杂的 UI 更新，但它们并不直接改变 Diff 算法的基本工作方式。
 
-```JavaScript
+```jsx
 // React 18 的并发特性示例
-import { startTransition } from 'react';
+import { startTransition } from "react";
 
 // 低优先级更新
 function handleInput(e) {
@@ -2060,15 +2081,15 @@ function handleInput(e) {
 
 **不推荐的做法**：
 
-```JavaScript
+```jsx
 function BadComponent({ items }) {
   // 每次渲染都创建新的函数引用
   const handleClick = (id) => {
-    console.log('Clicked item:', id);
+    console.log("Clicked item:", id);
   };
 
   // 每次渲染都创建新的对象
-  const style = { color: 'red' };
+  const style = { color: "red" };
 
   return (
     <div>
@@ -2087,15 +2108,15 @@ function BadComponent({ items }) {
 
 **推荐的做法**：
 
-```JavaScript
+```jsx
 function GoodComponent({ items }) {
   // 缓存函数引用
   const handleClick = useCallback((id) => {
-    console.log('Clicked item:', id);
+    console.log("Clicked item:", id);
   }, []);
 
   // 缓存样式对象
-  const style = useMemo(() => ({ color: 'red' }), []);
+  const style = useMemo(() => ({ color: "red" }), []);
 
   return (
     <div>
@@ -2170,7 +2191,7 @@ npm i scheduler -S
 
 Scheduler 会暴露很多方法，其中最重要的就是这个  `unstable_scheduleCallback`，它的含义是以某种优先级去调度一个任务。
 
-```js
+```jsx
 // test.js
 const { unstable_scheduleCallback } = require("scheduler");
 
@@ -2209,7 +2230,7 @@ Promise.resolve().then((res) => console.log("script屁股后的微任务"));
 
 它的具体实现在[这里](https://github.com/facebook/react/blob/main/packages/scheduler/src/SchedulerMinHeap.js)，如果对具体实现感兴趣的伙伴可以关注这个专栏，我后期会出一篇 react 中的算法的文章，来详细剖析一下它们的细节，但在这里可以把它当成一个黑盒就好了。
 
-```js
+```jsx
 // 比较策略
 function compare(a, b) {
   // 使用节点的 sortIndex作为判断依据 ，如果比较不了，就是用ID，也就是顺序了
@@ -2225,7 +2246,7 @@ Scheduler 是使用上面得比较策略来维护堆顶元素的。
 
 在 Scheduler 中有 5 种[优先级](https://github.com/facebook/react/blob/main/packages/scheduler/src/SchedulerPriorities.js)
 
-```js
+```jsx
 var ImmediatePriority = 1;
 var UserBlockingPriority = 2;
 var NormalPriority = 3;
@@ -2235,7 +2256,7 @@ var IdlePriority = 5;
 
 每一种优先级都对应了相应的过期时间
 
-```js
+```jsx
 var IMMEDIATE_PRIORITY_TIMEOUT = -1;
 var USER_BLOCKING_PRIORITY_TIMEOUT = 250;
 var NORMAL_PRIORITY_TIMEOUT = 5000;
@@ -2247,7 +2268,7 @@ var maxSigned31BitInt = 1073741823;
 
 首先了解几个重要的全局变量
 
-```js
+```jsx
 var taskQueue = []; // 任务队列
 var timerQueue = []; // 延时队列
 
@@ -2262,7 +2283,7 @@ var isHostTimeoutScheduled = false; // 是否有定时器来调度延时任务
 
 `taskQueue`  和  `timerQueue`  本质上是一个小根堆，只不过使用数组来实现这个小根堆而已。接下来看入口函数
 
-```js
+```jsx
 function unstable_scheduleCallback(priorityLevel, callback, options) {
   var currentTime = exports.unstable_now(); // 获取当前时间
   var startTime;
@@ -2334,7 +2355,7 @@ function unstable_scheduleCallback(priorityLevel, callback, options) {
 
 那么  `requestHostCallback`  做了什么呢？
 
-```js
+```jsx
 function requestHostCallback(callback) {
   scheduledHostCallback = callback; // 其实就是flushWork
 
@@ -2348,7 +2369,7 @@ function requestHostCallback(callback) {
 
 当第一个任务被流入 Scheduler 期间是没有正在进行的宏任务的，因此可以看看  `schedulePerformWorkUntilDeadline`  发生了什么
 
-```js
+```jsx
 schedulePerformWorkUntilDeadline = function () {
   port.postMessage(null);
 };
@@ -2356,7 +2377,7 @@ schedulePerformWorkUntilDeadline = function () {
 
 Scheduler 用了很多补丁来实现这个  `schedulePerformWorkUntilDeadline`，但是现代浏览器基本上都支持  [MessageChannel](https://developer.mozilla.org/en-US/docs/Web/API/MessageChannel) ，因此调用它意味着会在下一个宏任务的时候唤醒注册在另外一个**port**的回调函数。也就是这一个  `channel.port1.onmessage = performWorkUntilDeadline;`
 
-```js
+```jsx
 var performWorkUntilDeadline = function () {
   if (scheduledHostCallback !== null) {
     // 其实也就是之前赋值的flushWork
@@ -2383,7 +2404,7 @@ var performWorkUntilDeadline = function () {
 
 `performWorkUntilDeadline`  其实就是做了一件事情，执行  `flushWork`，我们来看下它做了什么：
 
-```js
+```jsx
 function flushWork(hasTimeRemaining, initialTime) { // initialTime是这一批任务的开始时间
   isHostCallbackScheduled = false; // 这个变量只有在flushWork的时候才会被释放。
   isPerformingWork = true;
@@ -2401,7 +2422,7 @@ function flushWork(hasTimeRemaining, initialTime) { // initialTime是这一批�
 
 `flushWork`  其实也仅仅只是调用了  `workLoop`，而  `workLoop`  才是调度的核心。
 
-```js
+```jsx
 function workLoop(hasTimeRemaining, initialTime) {
   var currentTime = initialTime;
   currentTask = peek(taskQueue);
@@ -2458,13 +2479,13 @@ Scheduler 并没有采取每一个宏任务只完成一个**task**这样的策�
 
 因此 Scheduler 当遇到小任务的时候，采取的策略是在同一个时间片内一起执行，直到它们的累计时长超过了规定的阈值之后才让出主线程。这个阈值在 Scheduler 中是 5ms，我们可以在[源码](https://github.com/facebook/react/blob/main/packages/scheduler/src/SchedulerFeatureFlags.js#L12C13-L12C31)中窥探的到。
 
-```js
+```jsx
 var frameYieldMs = 5; // 切片大小
 ```
 
 判断的方法就是  `shouldYieldToHost`
 
-```js
+```jsx
 var frameInterval = frameYieldMs;
 function shouldYieldToHost() {
   var timeElapsed = exports.unstable_now() - startTime;
@@ -2491,7 +2512,7 @@ function shouldYieldToHost() {
 
 这个就需要用户在使用 Scheduler 的时候对大任务的执行方式做一个设计，例如一个同步执行的大任务可以选择将其拆分为若干个独立的小任务用循环去执行，通过类似下面这样的**范式**就可以做到：
 
-```js
+```jsx
 let current = 0;
 let count = 100000;
 const bigWork = () => {
@@ -2513,7 +2534,7 @@ const bigWork = () => {
 
 用户需要将大任务以上面的范式进行改进，然后将大任务拆成极小的细粒度的小任务，然后每次执行小任务的时候都看一下是否用完了 5ms 的时间片，如果用完了就结束执行，这时候大任务可能还没有执行完，但是因为全局变量保存了大任务的执行进度因此并不会丢失掉信息，然后返回函数本身，这个时候我们再来看一下 Scheduler 是如何处理这种情况的。
 
-```js
+```jsx
 // workLoop 函数内部
 
 var continuationCallback = callback(didUserCallbackTimeout); // 执行过后
@@ -2531,7 +2552,7 @@ if (typeof continuationCallback === "function") {
 
 事实上 react 的并发模式就是通过这样的方式来实现大任务的更新的，如下所示：
 
-```js
+```jsx
 function workLoopConcurrent() {
   // Perform work until Scheduler asks us to yield
   while (workInProgress !== null && !shouldYield()) {
