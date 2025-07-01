@@ -13,5 +13,10 @@
     "type": "file",
     "name": "Promise.md",
     "label": "Promise相关"
+  },
+  {
+    "type": "file",
+    "name": "JS手写题.md",
+    "label": "JS手写"
   }
 ]
