@@ -12,5 +12,12 @@
     "label": "Vue2",
     "collapsible": true,
     "collapsed": true
+  },
+  {
+    "type": "dir",
+    "name": "React",
+    "label": "React",
+    "collapsible": true,
+    "collapsed": true
   }
 ]
