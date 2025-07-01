@@ -320,7 +320,7 @@ Function.prototype.myApply = function (context) {
 
 #### ES6 之前
 
-原型继承——即将子类的 prototype 指向为一个父类的实例
+原型继承——即将子类的 prototype **指向为一个父类的实例**
 
 缺点：父类的引用类型，会被所有子类共享
 
@@ -345,6 +345,7 @@ console.log("p.shared", p.shared); //  p.shared [ 'a', 'b', 'c', 'd' ]
 2.构造函数继承
 
 使用父类的构造函数来增强子类**实例**，等同于复制父类的实例给子类（不使用原型）
+**在子类中调用父类的构造函数，需要将函数绑定在子类上，否则子类实例的`constructor`属性会指向父类**
 
 ```js
 //构造函数继承
@@ -407,7 +408,7 @@ console.log("child", Child.prototype);
 缺点：会给 Child.prototype 添加两个属性“name”和“colors”
 
 而且会给 Child 的实例上添加 name 和 colors 属性
-![](../PublicImage/JS/Pasted%20image%2020240515201031.png)
+![alt text](./images/JsWriteCombinatorialInheritance.png)
 
 **寄生继承**
 
@@ -432,7 +433,7 @@ anotherPerson.sayHi(); //"hi"
 ```
 
 缺点：原型链继承多个实例的引用类型属性指向相同，存在篡改的可能。无法传递参数
-
+类似于 Py 的继承方式，把父类作为参数传递
 **组合寄生继承**
 
 最成熟的方法，也是当前库所有 的方法
@@ -517,6 +518,15 @@ function myNew(constructor, ...args) {
 ```js
 // 使用 unhandledrejection 来拦截全局错误  （这个是对的）
 window.addEventListener("unhandledrejection", (event) => {
+  event && event.preventDefault();
+  console.log("event", event);
+});
+```
+
+### 如何拦截 普通 JS 错误
+
+```js
+window.addEventListener("error", (event) => {
   event && event.preventDefault();
   console.log("event", event);
 });
