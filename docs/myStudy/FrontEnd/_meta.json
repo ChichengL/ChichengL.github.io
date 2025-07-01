@@ -19,5 +19,12 @@
     "label": "前端框架",
     "collapsible": true,
     "collapsed": true
+  },
+  {
+    "type": "dir",
+    "name": "ToolChain",
+    "label": "工具链",
+    "collapsible": true,
+    "collapsed": true
   }
 ]

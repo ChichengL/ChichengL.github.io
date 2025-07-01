@@ -954,3 +954,69 @@ myPromise.deferred = function () {
 
 module.exports = myPromise;
 ```
+
+## async 和 await 实现
+
+async/await 是基于 Promise+Generator 实现的，它的实现原理是：
+
+1. async 函数会返回一个 Promise 对象
+2. await 会暂停异步函数的执行，等待 Promise 对象的状态发生改变（fulfilled 或 rejected）
+3. 当 Promise 对象的状态发生改变时，执行 generator 函数的后续代码
+
+```js
+// 模拟 async 函数
+function myAsync(generatorFunction) {
+  // 返回一个 Promise 对象，这与原生 async 函数一致
+  return function () {
+    const generator = generatorFunction.apply(this, arguments);
+
+    // 递归执行 generator 的下一步
+    function step(key, arg) {
+      let generatorResult;
+
+      try {
+        // 执行 generator 的下一步，获取 { value, done }
+        generatorResult = generator[key](arg);
+      } catch (error) {
+        // 发生错误时，Promise 以错误 rejected
+        return Promise.reject(error);
+      }
+
+      const { value, done } = generatorResult;
+
+      if (done) {
+        // 如果 generator 执行完毕，返回最终结果
+        return Promise.resolve(value);
+      } else {
+        // 如果 value 是 Promise，则等待它解决后继续执行
+        return Promise.resolve(value).then(
+          (result) => step("next", result),
+          (error) => step("throw", error)
+        );
+      }
+    }
+
+    // 启动 generator 的执行
+    return step("next");
+  };
+}
+
+// 使用示例
+const fetchData = () =>
+  new Promise((resolve) => setTimeout(() => resolve("Data fetched"), 1000));
+
+const asyncFunction = myAsync(function* () {
+  console.log("Start");
+  try {
+    // 使用模拟的 await（实际上直接用 yield 即可）
+    const data = yield fetchData();
+    console.log(data);
+    return "Done";
+  } catch (error) {
+    console.error("Error:", error);
+  }
+});
+
+// 调用模拟的 async 函数
+asyncFunction().then((result) => console.log(result));
+```

@@ -1,6 +1,11 @@
 [
   {
     "type": "file",
+    "name": "index.md",
+    "label": "首页"
+  },
+  {
+    "type": "file",
     "name": "TS体操.md",
     "label": "TS体操"
   },
