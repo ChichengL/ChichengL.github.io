@@ -1020,3 +1020,92 @@ const asyncFunction = myAsync(function* () {
 // 调用模拟的 async 函数
 asyncFunction().then((result) => console.log(result));
 ```
+
+## 请求相关 AJAX
+
+AJAX -> Asynchronous Javascript and XML 本质上是 JS 向服务端拿取数据
+
+AJAX -> Axios(XHR) || Fetch
+XHR VS Fetch
+
+| 功能点                    | XHR      | Fetch    |
+| ------------------------- | -------- | -------- |
+| 基本请求能力              | ✅       | ✅       |
+| 基本获取响应能力          | ✅       | ✅       |
+| 监控请求进度              | ✅       | ❌       |
+| 监控响应进度              | ✅       | ✅       |
+| Service Worker 中是否可用 | ❌       | ✅       |
+| 控制 Cookie 的鞋带        | ❌       | ✅       |
+| 控制重定向                | ❌       | ✅       |
+| 请求取消                  | ✅       | ✅       |
+| 自定义 Referrer           | ❌       | ✅       |
+| 流                        | ❌       | ✅       |
+| API 风格                  | Event    | Promise  |
+| 活跃度                    | 停止更新 | 不断更新 |
+
+### 基本请求 + 响应
+
+1. XHR/axios
+
+> [XMLHttpRequest](https://developer.mozilla.org/en-US/docs/Web/API/XMLHttpRequest)
+
+[axios](https://axios-http.com/zh/docs/intro)
+
+```js
+const xhr = new XMLHttpRequest();
+xhr.open("GET", "https://www.baidu.com");
+xhr.send();
+
+xhr.onreadystatechange = () => {
+  if (xhr.readyState === 4) {
+    console.log("xhr", xhr.responseText);
+  }
+};
+
+const axios = require("axios");
+axios.get("https://www.baidu.com").then((res) => {
+  console.log("res", res);
+});
+```
+
+2. fetch
+
+> [fetch](https://developer.mozilla.org/en-US/docs/Web/API/Fetch_API)
+
+```js
+fetch("https://www.baidu.com", {
+  method: "GET",
+  headers: {
+    "Content-Type": "application/json",
+  },
+}).then((res) => {
+  console.log("res", res);
+});
+```
+
+### 监控请求进度
+
+1. XHR/axios
+
+```js
+const xhr = new XMLHttpRequest();
+xhr.open("GET", "https://www.baidu.com");
+xhr.send();
+
+xhr.onprogress = (event) => {
+  console.log("xhr", event);
+};
+/**
+ * 监控响应进度 和下面等效
+ */
+xhr.addEventListener("progress", (event) => {
+  console.log("xhr", event);
+});
+
+const axios = require("axios");
+axios.get("https://www.baidu.com", {
+  onDownloadProgress: (event) => {
+    console.log("axios", event);
+  },
+});
+```

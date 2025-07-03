@@ -19,10 +19,5 @@
     "label": "React",
     "collapsible": true,
     "collapsed": true
-  },
-  {
-    "type": "file",
-    "name": "DesignPhilosophy.md",
-    "label": "设计哲学"
   }
 ]
