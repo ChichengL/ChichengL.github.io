@@ -467,7 +467,7 @@ console.log(child2);
 ```
 
 只有子类实例上有方法，而父类没有
-![](../PublicImage/JS/Pasted%20image%2020240515201251.png)
+![](./images/JsWriteCombinatorialInheritance.png)
 
 #### ES6 及之后
 
@@ -491,8 +491,6 @@ const child1 = new Child("John", 10);
 child1.sayHello(); // Output: Hello, my name is John
 console.log(child1); //
 ```
-
-![](../PublicImage/JS/Pasted%20image%2020240515201349.png)
 
 ### 实现 new 操作符
 

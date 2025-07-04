@@ -26,5 +26,12 @@
     "label": "工具链",
     "collapsible": true,
     "collapsed": true
+  },
+  {
+    "type": "dir",
+    "name": "Other",
+    "label": "其他",
+    "collapsible": true,
+    "collapsed": true
   }
 ]

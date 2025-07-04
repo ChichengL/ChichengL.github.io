@@ -208,9 +208,9 @@ let dec = new Decorator(cellphone);
 dec.create();
 ```
 
-ES7 之后也有装饰器对应的语法了。
+TS 支持装饰器
 
-```js
+```ts
 // 装饰器函数，它的第一个参数是目标类
 function classDecorator(target) {
   target.hasDecorator = true;
