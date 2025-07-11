@@ -9,7 +9,7 @@
   {
     "type": "dir",
     "name": "RelatedLanguages",
-    "label": "三件套+TS",
+    "label": "前端相关",
     "collapsible": true,
     "collapsed": true
   },
