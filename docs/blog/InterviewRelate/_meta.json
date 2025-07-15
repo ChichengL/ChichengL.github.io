@@ -41,5 +41,14 @@
     "collapsible": true,
     "collapsed": true
   },
-  "JS手写题.md"
+  {
+    "type": "file",
+    "name": "JS手写题.md",
+    "label": "JS手写题"
+  },
+  {
+    "type": "file",
+    "name": "高频算法题.md",
+    "label": "高频算法题"
+  }
 ]
