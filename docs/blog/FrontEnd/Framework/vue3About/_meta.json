@@ -1,1 +1,17 @@
-["Vue3源码学习.md","手写Pinia小记.md","Vite.md"]
+[
+  {
+    "type": "file",
+    "name": "Vue3源码学习.md",
+    "label": "Vue3源码学习"
+  },
+  {
+    "type": "file",
+    "name": "手写Pinia小记.md",
+    "label": "手写Pinia小记"
+  },
+  {
+    "type": "file",
+    "name": "Vite.md",
+    "label": "Vite"
+  }
+]
