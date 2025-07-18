@@ -19,5 +19,12 @@
     "label": "React",
     "collapsible": true,
     "collapsed": true
+  },
+  {
+    "type": "dir",
+    "name": "Vue-React",
+    "label": "Vue与React对比",
+    "collapsible": true,
+    "collapsed": true
   }
 ]

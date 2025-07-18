@@ -5,5 +5,12 @@
     "label": "React深入原理",
     "collapsible": true,
     "collapsed": true
+  },
+  {
+    "type": "file",
+    "name": "React三大基石.md",
+    "label": "React三大基石",
+    "collapsible": true,
+    "collapsed": true
   }
 ]
