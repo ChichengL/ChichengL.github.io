@@ -7,6 +7,11 @@
   {
     "type": "file",
     "name": "update.md",
-    "label": "vue/react 更新差异对比"
+    "label": "vue/react 更新对比"
+  },
+  {
+    "type": "file",
+    "name": "diff.md",
+    "label": "vue/react diff对比"
   }
 ]

@@ -4,17 +4,21 @@
     "type": "split",
     "children": [
       {
-        "id": "09c64887fba86bc8",
+        "id": "f25609762f5f0616",
         "type": "tabs",
         "children": [
           {
-            "id": "053fa52109e54b47",
+            "id": "9a6c81bc4e881572",
             "type": "leaf",
             "state": {
-              "type": "empty",
-              "state": {},
+              "type": "markdown",
+              "state": {
+                "file": "docs/blog/FrontEnd/Framework/Vue-React/diff.md",
+                "mode": "source",
+                "source": false
+              },
               "icon": "lucide-file",
-              "title": "新标签页"
+              "title": "diff"
             }
           }
         ]
@@ -161,8 +165,10 @@
       "command-palette:打开命令面板": false
     }
   },
-  "active": "053fa52109e54b47",
+  "active": "9a6c81bc4e881572",
   "lastOpenFiles": [
+    "doc_build/static/search_index.b8d088ce.json",
+    "docs/blog/FrontEnd/Framework/Vue-React/diff.md",
     "docs/blog/FrontEnd/Framework/Vue-React/update.md",
     "docs/experience/myLife/基础复习.md"
   ]
