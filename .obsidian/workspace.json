@@ -4,11 +4,11 @@
     "type": "split",
     "children": [
       {
-        "id": "4feae28f720603d7",
+        "id": "09c64887fba86bc8",
         "type": "tabs",
         "children": [
           {
-            "id": "1e203e9ebbe7a7e9",
+            "id": "053fa52109e54b47",
             "type": "leaf",
             "state": {
               "type": "empty",
@@ -161,8 +161,9 @@
       "command-palette:打开命令面板": false
     }
   },
-  "active": "1e203e9ebbe7a7e9",
+  "active": "053fa52109e54b47",
   "lastOpenFiles": [
+    "docs/blog/FrontEnd/Framework/Vue-React/update.md",
     "docs/experience/myLife/基础复习.md"
   ]
 }
