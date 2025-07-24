@@ -240,7 +240,35 @@ FiberNode {
 }
 ```
 
-![[../../Excalidraw/React深入原理 2025-05-28 11.37.18.excalidraw]]
+```mermaid
+graph TD
+    %% 定义 fiber 相关节点及连接
+    fiber((fiber)) --> memoizedState[memoizedState]
+    fiber --> updateQueue[updateQueue]
+    memoizedState --> hook1[hook1]
+    hook1 --> hook2[hook2]
+    hook2 --> hook3[hook3]
+    hook3 --> hook4[hook4]
+    hook4 --> hook5[hook5]
+    hook5 --> hook6[hook6]
+    hook6 --> hook7[hook7]
+    hook7 --> hook8[hook8]
+    hook8 --> hook9[hook9]
+
+    %% 定义 updateQueue 相关 effect 节点及连接
+    updateQueue --> firstEffect[firstEffect]
+    updateQueue --> lastEffect[lastEffect]
+    firstEffect --> effect1[effect1]
+    lastEffect --> effect4[effect4]
+
+    %% 修改effect间连接关系，箭头中间显示nextEffect
+    effect1 -->|nextEffect| effect2[effect2]
+    effect2 -->|prevEffect| effect1
+    effect2 -->|nextEffect| effect3[effect3]
+    effect3 -->|prevEffect| effect2
+    effect3 -->|nextEffect| effect4
+    effect4 -->|prevEffect| effect3
+```
 
 副作用分为两类：
 
