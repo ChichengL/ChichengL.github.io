@@ -52,26 +52,30 @@ graph TD
         A["setState() / useState()"] --> B["scheduleUpdateOnFiber<br/>(创建更新, 分配优先级)"]
         B --> C{"Scheduler<br/>(调度中心)"}
         C --> D["将更新任务加入<br/>任务队列"]
+        D --> E{"根据优先级选择执行方式"}
+        E -->|同步任务| F["performSyncWorkOnRoot"]
+        E -->|并发任务| G["performConcurrentWorkOnRoot"]
     end
 
     subgraph "Reconciler (Render Phase • 可中断)"
-        D --> E["performUnitOfWork<br/>(开始工作循环)"]
-        E --> F{"遍历 Fiber 树<br/>(beginWork & completeWork)"}
-        F --> G["Diffing 算法<br/>(比较新旧 Virtual DOM)"]
-        G --> H["标记副作用<br/>(生成 Effect List)"]
-        H --> I{"树协调完成?"}
-        I -- "No" --> E
-        I -- "Yes" --> J
+        F --> H["performUnitOfWork<br/>(开始工作循环)"]
+        G --> H
+        H --> I{"遍历 Fiber 树<br/>(beginWork & completeWork)"}
+        I --> J["Diffing 算法<br/>(比较新旧 Fiber 节点)"]
+        J --> K["标记副作用<br/>(生成 Effect List)"]
+        K --> L{"树协调完成?"}
+        L -- "No" --> H
+        L -- "Yes" --> M
     end
 
     subgraph "Commit Phase (同步, 不可中断)"
-        J["commitRoot<br/>(提交入口)"]
-        J --> K["Before Mutation<br/>(DOM变更前, e.g., getSnapshotBeforeUpdate)"]
-        K --> L["Mutation<br/>(执行DOM增删改)"]
-        L --> M["Layout<br/>(DOM变更后, e.g., componentDidMount/Update, useLayoutEffect)"]
+        M["commitRoot<br/>(提交入口)"]
+        M --> N["Before Mutation<br/>(DOM变更前, e.g., getSnapshotBeforeUpdate)"]
+        N --> O["Mutation<br/>(执行DOM增删改)"]
+        O --> P["Layout<br/>(DOM变更后, e.g., componentDidMount/Update, useLayoutEffect)"]
     end
 
-    M --> N(("DOM 更新完成"))
+    P --> Q(("DOM 更新完成"))
 ```
 
 ## Vue 更新流程深度解析
