@@ -52,30 +52,26 @@ graph TD
         A["setState() / useState()"] --> B["scheduleUpdateOnFiber<br/>(创建更新, 分配优先级)"]
         B --> C{"Scheduler<br/>(调度中心)"}
         C --> D["将更新任务加入<br/>任务队列"]
-        D --> E{"根据优先级选择执行方式"}
-        E -->|同步任务| F["performSyncWorkOnRoot"]
-        E -->|并发任务| G["performConcurrentWorkOnRoot"]
     end
 
     subgraph "Reconciler (Render Phase • 可中断)"
-        F --> H["performUnitOfWork<br/>(开始工作循环)"]
-        G --> H
-        H --> I{"遍历 Fiber 树<br/>(beginWork & completeWork)"}
-        I --> J["Diffing 算法<br/>(比较新旧 Fiber 节点)"]
-        J --> K["标记副作用<br/>(生成 Effect List)"]
-        K --> L{"树协调完成?"}
-        L -- "No" --> H
-        L -- "Yes" --> M
+        D --> E["performUnitOfWork<br/>(开始工作循环)"]
+        E --> F{"遍历 Fiber 树<br/>(beginWork & completeWork)"}
+        F --> G["Diffing 算法<br/>(比较新旧 Virtual DOM)"]
+        G --> H["标记副作用<br/>(生成 Effect List)"]
+        H --> I{"树协调完成?"}
+        I -- "No" --> E
+        I -- "Yes" --> J
     end
 
     subgraph "Commit Phase (同步, 不可中断)"
-        M["commitRoot<br/>(提交入口)"]
-        M --> N["Before Mutation<br/>(DOM变更前, e.g., getSnapshotBeforeUpdate)"]
-        N --> O["Mutation<br/>(执行DOM增删改)"]
-        O --> P["Layout<br/>(DOM变更后, e.g., componentDidMount/Update, useLayoutEffect)"]
+        J["commitRoot<br/>(提交入口)"]
+        J --> K["Before Mutation<br/>(DOM变更前, e.g., getSnapshotBeforeUpdate)"]
+        K --> L["Mutation<br/>(执行DOM增删改)"]
+        L --> M["DOM变更后, 渲染前:<br/>e.g., componentDidMount/Update, useLayoutEffect<br/>渲染后异步执行: useEffect"]
     end
 
-    P --> Q(("DOM 更新完成"))
+    M --> N(("DOM 更新完成"))
 ```
 
 ## Vue 更新流程深度解析
@@ -125,19 +121,23 @@ graph TD
         E["修改响应式数据<br/>e.g., state.count++"] --> F["Proxy 'set' 拦截"]
         F --> G["trigger<br/>派发更新"]
         G --> H["查找依赖于此数据的<br/>所有 effects"]
-        H --> I{Scheduler<br/>调度中心}
-        I --> J["将 effects 加入<br/>异步更新队列 去重"]
+        H --> I["Effects 分类"]
+        I --> I1["computed effect<br/>(计算属性更新)"]
+        I --> I2["watch effect<br/>(监听器回调)"]
+        I --> I3["component effect<br/>(组件更新)"]
+        I1 & I2 & I3 --> J{Scheduler<br/>调度中心}
+        J --> K["按优先级排序执行队列<br/>(computed → watch → component)<br/>并去重重复任务"]
     end
 
     subgraph "Render & Patch Next Tick"
-        J --> K["调度器执行队列中<br/>的 effects"]
-        K --> L["重新执行 render 函数<br/>生成新 VNode 树"]
-        L --> M["patch oldVNode, newVNode<br/>执行 Diff & Patch"]
-        M --> N["计算最小差异"]
-        N --> O["将变更应用到<br/>真实 DOM"]
+        K --> L["调度器执行队列中<br/>的 effects（在下一次微任务/宏任务）"]
+        L --> M["重新执行 render 函数<br/>生成新 VNode 树"]
+        M --> N["patch oldVNode, newVNode<br/>执行 Diff & Patch"]
+        N --> O["计算最小差异"]
+        O --> P["将变更应用到<br/>真实 DOM"]
     end
 
-    O --> P((DOM 更新完成))
+    P --> Q((DOM 更新完成))
 ```
 
 ## React vs. Vue 更新机制对比分析
