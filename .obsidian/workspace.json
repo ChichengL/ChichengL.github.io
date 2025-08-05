@@ -13,12 +13,12 @@
             "state": {
               "type": "markdown",
               "state": {
-                "file": "docs/blog/FrontEnd/Framework/Vue-React/update.md",
+                "file": "docs/experience/myLife/基础复习.md",
                 "mode": "source",
                 "source": false
               },
               "icon": "lucide-file",
-              "title": "update"
+              "title": "基础复习"
             }
           }
         ]
@@ -168,11 +168,15 @@
   },
   "active": "10021d1e510a8d27",
   "lastOpenFiles": [
-    "docs/experience/myLife/基础复习.mdx",
+    "docs/blog/浏览器渲染原理简记.md",
+    "doc_build/static/search_index.6dd69504.json",
+    "docs/experience/myLife/基础复习.md",
+    "docs/experience/myLife/未命名",
+    "docs/experience/index.md",
+    "docs/experience/与前端的经历.md",
     "docs/blog/FrontEnd/Framework/Vue-React/diff.md",
     "doc_build/static/search_index.b5742ebc.json",
     "doc_build/static/search_index.b8d088ce.json",
-    "docs/blog/FrontEnd/Framework/Vue-React/update.md",
-    "docs/experience/myLife/基础复习.md"
+    "docs/blog/FrontEnd/Framework/Vue-React/update.md"
   ]
 }
