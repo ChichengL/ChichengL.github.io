@@ -212,20 +212,24 @@ console.log(newObj2.b === newObj2);
 bind，在函数上调用，将其 this 指向传入的对象，并且返回一个函数
 
 ```js
-Function.prototype.myBind = function (context) {
+Function.prototype.myBind = function (context, ...args) {
   if (typeof this !== "function") {
-    throw new TypeError("Error: this is not a function");
+    throw new TypeError("Bind must be called on a function");
   }
-  if (context === undefined || context === null) {
-    context = window;
-  } else {
-    context = Object(context);
+
+  const fn = this;
+
+  function boundFunction(...restArgs) {
+    // 如果作为构造函数调用，this 是新对象，忽略 context
+    return fn.apply(
+      this instanceof boundFunction ? this : context,
+      args.concat(restArgs)
+    );
   }
-  const self = this;
-  const args = [...arguments].slice(1);
-  return function () {
-    return self.apply(context, args.concat([...arguments]));
-  };
+
+  // 继承原函数的 prototype
+  boundFunction.prototype = Object.create(fn.prototype);
+  return boundFunction;
 };
 ```
 

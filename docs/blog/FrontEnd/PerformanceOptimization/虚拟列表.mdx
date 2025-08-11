@@ -1,0 +1,195 @@
+## 虚拟列表技术介绍
+
+虚拟列表（Virtual List）是一种高效渲染大型列表的优化技术，通过只渲染可视区域内的元素，大幅提升页面性能。
+
+## 固定高度虚拟列表
+
+**实现步骤：**
+
+1. 计算可见区域能容纳的项数：`visibleCount = Math.ceil(容器高度 / 项高度)`
+2. 根据滚动位置计算起始索引：`startIndex = Math.floor(滚动距离 / 项高度)`
+3. 计算结束索引：`endIndex = startIndex + visibleCount`
+4. 计算偏移量：`offsetY = startIndex * 项高度`
+5. 只渲染可见项，通过`transform: translateY`定位到正确位置
+
+**关键特性：**
+
+- 所有列表项高度相同
+- 计算简单高效
+- 滚动位置计算直接使用除法
+- 总高度预知：`总高度 = 项数量 * 固定高度`
+  代码实现：
+
+```jsx
+import React, { useState, useRef } from "react";
+
+const FixedHeightVirtualList = ({
+  itemHeight,
+  totalCount,
+  renderItem,
+  height,
+}) => {
+  const [scrollTop, setScrollTop] = useState(0);
+  const containerRef = useRef(null);
+
+  const startIndex = Math.floor(scrollTop / itemHeight);
+  const visibleCount = Math.ceil(height / itemHeight);
+  const endIndex = Math.min(totalCount - 1, startIndex + visibleCount);
+
+  const offsetY = startIndex * itemHeight;
+  const visibleItems = [];
+  for (let i = startIndex; i <= endIndex; i++) {
+    visibleItems.push(renderItem(i));
+  }
+
+  return (
+    <div
+      ref={containerRef}
+      style={{ overflowY: "auto", height }}
+      onScroll={(e) => setScrollTop(e.target.scrollTop)}
+    >
+      <div style={{ height: totalCount * itemHeight, position: "relative" }}>
+        <div style={{ transform: `translateY(${offsetY}px)` }}>
+          {visibleItems}
+        </div>
+      </div>
+    </div>
+  );
+};
+
+export { FixedHeightVirtualList };
+```
+
+import { CodePreview } from "./components/CodePreview";
+import { FixedHeightVirtualList } from "./components/FixedHeightVirtualList";
+
+<FixedHeightVirtualList
+  itemHeight={50}
+  totalCount={1000}
+  renderItem={(index) => (
+    <div style={{ textAlign: "center", height: 50 }} key={index}>
+      {index}
+    </div>
+  )}
+  height={500}
+/>
+
+## 不定高虚拟列表
+
+**实现步骤：**
+
+1. 初始化高度数组（初始使用估计值）
+2. 动态测量实际高度并更新数组
+3. 生成位置数组（累计高度）
+4. 使用二分查找定位起始索引
+5. 计算结束索引（累加高度直到超过容器高度）
+6. 通过`transform`定位可见项
+
+**关键特性：**
+
+- 列表项高度动态变化
+- 需要实时测量元素高度
+- 使用位置数组记录累计高度
+- 二分查找快速定位起始位置
+- 总高度 = 位置数组最后一项的值
+  代码实现:
+
+```jsx
+import React, { useRef, useState, useEffect } from "react";
+
+const DynamicHeightVirtualList = ({ totalCount, renderItem, height }) => {
+  const [scrollTop, setScrollTop] = useState(0);
+  const [heights, setHeights] = useState(new Array(totalCount).fill(50)); // 初始估值
+  const containerRef = useRef(null);
+  const itemRefs = useRef({});
+
+  // 动态测量高度
+  useEffect(() => {
+    Object.keys(itemRefs.current).forEach((key) => {
+      const node = itemRefs.current[key];
+      if (node) {
+        const h = node.getBoundingClientRect().height;
+        if (heights[key] !== h) {
+          setHeights((prev) => {
+            const next = [...prev];
+            next[key] = h;
+            return next;
+          });
+        }
+      }
+    });
+  }, [scrollTop]);
+
+  // 计算累计位置
+  const positions = heights.reduce((acc, h, i) => {
+    acc.push((acc[i - 1] || 0) + h);
+    return acc;
+  }, []);
+
+  // 二分查找 startIndex
+  const findStartIndex = (scrollTop) => {
+    let low = 0,
+      high = totalCount - 1;
+    while (low <= high) {
+      const mid = Math.floor((low + high) / 2);
+      if (positions[mid] < scrollTop) {
+        low = mid + 1;
+      } else {
+        high = mid - 1;
+      }
+    }
+    return low;
+  };
+
+  const startIndex = findStartIndex(scrollTop);
+  let offsetY = positions[startIndex - 1] || 0;
+  let endIndex = startIndex;
+  let sumHeight = 0;
+  while (endIndex < totalCount && sumHeight < height) {
+    sumHeight += heights[endIndex];
+    endIndex++;
+  }
+
+  return (
+    <div
+      ref={containerRef}
+      style={{ overflowY: "auto", height }}
+      onScroll={(e) => setScrollTop(e.target.scrollTop)}
+    >
+      <div style={{ height: positions[totalCount - 1] }}>
+        <div style={{ transform: `translateY(${offsetY}px)` }}>
+          {Array.from({ length: endIndex - startIndex }).map((_, i) => {
+            const idx = startIndex + i;
+            return (
+              <div key={idx} ref={(el) => (itemRefs.current[idx] = el)}>
+                {renderItem(idx)}
+              </div>
+            );
+          })}
+        </div>
+      </div>
+    </div>
+  );
+};
+
+export { DynamicHeightVirtualList };
+```
+
+import { DynamicHeightVirtualList } from "./components/DynamicHeightVirtualList";
+
+<DynamicHeightVirtualList
+  totalCount={1000}
+  renderItem={(index) => (
+    <div
+      style={{
+        backgroundColor:
+          index % 3 === 0 ? "red" : index % 3 === 1 ? "green" : "blue",
+        height: index % 3 === 0 ? "50px" : index % 3 === 1 ? "100px" : "150px",
+      }}
+      key={index}
+    >
+      {index}
+    </div>
+  )}
+  height={500}
+/>
