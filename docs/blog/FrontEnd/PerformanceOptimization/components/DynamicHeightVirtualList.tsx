@@ -76,3 +76,4 @@ const DynamicHeightVirtualList = ({ totalCount, renderItem, height }) => {
 };
 
 export { DynamicHeightVirtualList };
+export default DynamicHeightVirtualList;

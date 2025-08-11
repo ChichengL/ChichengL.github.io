@@ -35,3 +35,4 @@ const FixedHeightVirtualList = ({
 };
 
 export { FixedHeightVirtualList };
+export default FixedHeightVirtualList;
