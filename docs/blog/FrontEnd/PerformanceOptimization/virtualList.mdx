@@ -1,3 +1,6 @@
+import FixedHeightVirtualList from "./components/FixedHeightVirtualList";
+import DynamicHeightVirtualList from "./components/DynamicHeightVirtualList";
+
 ## 虚拟列表技术介绍
 
 虚拟列表（Virtual List）是一种高效渲染大型列表的优化技术，通过只渲染可视区域内的元素，大幅提升页面性能。
@@ -57,10 +60,10 @@ const FixedHeightVirtualList = ({
   );
 };
 
-export { FixedHeightVirtualList };
+export default FixedHeightVirtualList;
 ```
 
-import { FixedHeightVirtualList } from "./components/FixedHeightVirtualList";
+实现预览:
 
 <FixedHeightVirtualList
   itemHeight={50}
@@ -171,10 +174,10 @@ const DynamicHeightVirtualList = ({ totalCount, renderItem, height }) => {
   );
 };
 
-export { DynamicHeightVirtualList };
+export default DynamicHeightVirtualList;
 ```
 
-import { DynamicHeightVirtualList } from "./components/DynamicHeightVirtualList";
+实现预览：
 
 <DynamicHeightVirtualList
   totalCount={1000}
