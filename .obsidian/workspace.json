@@ -13,12 +13,12 @@
             "state": {
               "type": "markdown",
               "state": {
-                "file": "docs/blog/InterviewRelate/2024.5/5月份面试总结.md",
+                "file": "docs/blog/InterviewRelate/2024.5/腾讯面试.md",
                 "mode": "source",
                 "source": false
               },
               "icon": "lucide-file",
-              "title": "5月份面试总结"
+              "title": "腾讯面试"
             }
           },
           {
@@ -35,8 +35,7 @@
               "title": "diff"
             }
           }
-        ],
-        "currentTab": 1
+        ]
       }
     ],
     "direction": "vertical"
@@ -109,7 +108,7 @@
             "state": {
               "type": "backlink",
               "state": {
-                "file": "docs/blog/FrontEnd/Framework/Vue-React/diff.md",
+                "file": "docs/blog/InterviewRelate/2024.5/腾讯面试.md",
                 "collapseAll": false,
                 "extraContext": false,
                 "sortOrder": "alphabetical",
@@ -119,7 +118,7 @@
                 "unlinkedCollapsed": true
               },
               "icon": "links-coming-in",
-              "title": "diff 的反向链接列表"
+              "title": "腾讯面试 的反向链接列表"
             }
           },
           {
@@ -156,13 +155,13 @@
             "state": {
               "type": "outline",
               "state": {
-                "file": "docs/blog/FrontEnd/Framework/Vue-React/diff.md",
+                "file": "docs/blog/InterviewRelate/2024.5/腾讯面试.md",
                 "followCursor": false,
                 "showSearch": false,
                 "searchQuery": ""
               },
               "icon": "lucide-list",
-              "title": "diff 的大纲"
+              "title": "腾讯面试 的大纲"
             }
           }
         ],
@@ -183,8 +182,13 @@
       "obsidian-excalidraw-plugin:新建绘图文件": false
     }
   },
-  "active": "d4c90c9b3d59aa86",
+  "active": "b88b763f4a6d4ac2",
   "lastOpenFiles": [
+    "docs/blog/InterviewRelate/2024.5/面试题.md",
+    "docs/blog/InterviewRelate/2024.5/抖音电商前端——陈双彬.md",
+    "docs/blog/InterviewRelate/2024.5/24-5-13 ybf 快手 24-5-14美团.md",
+    "docs/blog/InterviewRelate/2024.5/24-5-13  cxh xhs2面.md",
+    "docs/blog/InterviewRelate/2024.5/24-3-13面试复盘.md",
     "docs/blog/InterviewRelate/2024.5/5月份面试总结.md",
     "docs/blog/FrontEnd/Framework/Vue-React/diff.md",
     "docs/blog/FrontEnd/Framework/vue3About/Vue3源码学习.md",
