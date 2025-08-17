@@ -27,16 +27,32 @@ function debounce(fn, times) {
 throttle
 
 ```js
-function throttle(fn) {
-  let flag = null; // 通过闭包保存一个标记
-  return function () {
-    if (flag) return; // 当定时器没有执行的时候标记永远是null
-    flag = setTimeout(() => {
-      fn.apply(this, arguments);
-      // 最后在setTimeout执行完毕后再把标记设置为null(关键)
-      // 表示可以执行下一次循环了。
-      flag = null;
-    }, 500);
+function throttle(func, wait) {
+  let waiting = false;
+  let lastArgs = null;
+  function startCooling() {
+    setTimeout(() => {
+      if (lastArgs) {
+        // 冷却期内有过调用 → 执行最后一次的参数，重新启动冷却
+        func.apply(this, lastArgs);
+        lastArgs = null; // 清空参数
+        startCooling(); // 重新启动冷却（处理可能的后续调用）
+      } else {
+        // 冷却期内无调用 → 结束冷却状态
+        waiting = false;
+      }
+    }, wait);
+  }
+  return function (...args) {
+    if (!waiting) {
+      // 情况1：不在冷却期 → 立即执行原始函数，进入冷却期
+      func.apply(this, args);
+      waiting = true;
+      startCooling.call(this); // 启动冷却定时器
+    } else {
+      // 情况2：在冷却期 → 记录最后一次调用的参数
+      lastArgs = args;
+    }
   };
 }
 ```
@@ -622,6 +638,8 @@ function convert(arr, parentId) {
   });
 }
 ```
+
+### Promise 手写
 
 ## Node 面试题
 
