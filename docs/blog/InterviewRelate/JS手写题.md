@@ -609,6 +609,15 @@ const flat = (arr, deep = 1) => {
   }
   return res;
 };
+const myFlat = (arr, d = Infinity) => {
+  return d > 0
+    ? arr.reduce(
+        (acc, cur) =>
+          Array.isArray(cur) ? acc.concat(myFlat(cur, d - 1)) : acc.concat(cur),
+        []
+      )
+    : arr;
+};
 ```
 
 还有巧计，只求最大的话
