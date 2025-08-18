@@ -650,6 +650,80 @@ function convert(arr, parentId) {
 
 ### Promise 手写
 
+### React 自定义 hook
+
+#### useFetch
+
+```ts
+import { useEffect, useState, useRef } from "react";
+/**
+ * 优化后的useFetch Hook
+ * @param {Function} fetchFn - 发起请求的函数，接收参数并返回Promise
+ * @param {any[]} deps - 触发请求重新执行的依赖项（类似useEffect的依赖）
+ * @returns {Object} - { data, isLoading, error, refetch }
+ */
+const useFetch = <T>(
+  fetchFn: (...args: any[]) => Promise<T>,
+  deps: any[] = []
+) => {
+  const [data, setData] = (useState < T) | (null > null); // 用泛型支持任意类型，初始为null
+  const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = (useState < Error) | (null > null);
+
+  // 用于取消请求的控制器
+  const abortControllerRef = (useState < AbortController) | (null > null[0]);
+
+  // 封装请求逻辑，支持手动调用（refetch）
+  const fetchData = useCallback(
+    async (...args: any[]) => {
+      // 取消之前的请求（解决竞态条件）
+      if (abortControllerRef) {
+        abortControllerRef.abort();
+      }
+      const controller = new AbortController();
+      abortControllerRef = controller;
+
+      setIsLoading(true);
+      setError(null); // 重置错误状态
+
+      try {
+        // 传递信号给fetch，支持取消
+        const response = await fetchFn(...args, { signal: controller.signal });
+        setData(response);
+      } catch (err) {
+        // 忽略取消请求导致的错误
+        if (err instanceof Error && err.name !== "AbortError") {
+          setError(err);
+        }
+      } finally {
+        // 只有当控制器未被取消时，才更新loading（避免组件卸载后更新）
+        if (!controller.signal.aborted) {
+          setIsLoading(false);
+        }
+      }
+    },
+    [fetchFn]
+  );
+
+  // 初始请求：依赖变化时自动执行
+  useEffect(() => {
+    const controller = new AbortController();
+    abortControllerRef = controller;
+
+    fetchData();
+
+    // 组件卸载时取消请求
+    return () => {
+      controller.abort();
+    };
+  }, [fetchData, ...deps]); // 依赖deps和fetchData
+
+  return { data, isLoading, error, refetch: fetchData };
+};
+
+export default useFetch;
+```
+
 ## Node 面试题
 
 https://elemefe.github.io/node-interview/#/sections/zh-cn/
