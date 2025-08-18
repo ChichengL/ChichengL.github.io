@@ -4,11 +4,11 @@
     "type": "split",
     "children": [
       {
-        "id": "ff540deaefd19200",
+        "id": "ae1a66cdab355ab2",
         "type": "tabs",
         "children": [
           {
-            "id": "f3aa27bb5617aeed",
+            "id": "11b1bf0586c6ffcd",
             "type": "leaf",
             "state": {
               "type": "empty",
@@ -163,7 +163,7 @@
       "obsidian-excalidraw-plugin:新建绘图文件": false
     }
   },
-  "active": "f3aa27bb5617aeed",
+  "active": "11b1bf0586c6ffcd",
   "lastOpenFiles": [
     "docs/blog/FrontEnd/Framework/Vue-React/diff.md",
     "docs/blog/InterviewRelate/2024.8/简历剖析：2024.8.md",
