@@ -2,5 +2,9 @@
   {
     "name": "DesignRule.md",
     "label": "设计原则"
+  },
+  {
+    "name": "network",
+    "label": "计算机网络"
   }
 ]
