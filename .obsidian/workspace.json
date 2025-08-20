@@ -11,10 +11,14 @@
             "id": "11b1bf0586c6ffcd",
             "type": "leaf",
             "state": {
-              "type": "empty",
-              "state": {},
+              "type": "markdown",
+              "state": {
+                "file": "docs/blog/FrontEnd/PerformanceOptimization/UrlToDisplay.md",
+                "mode": "source",
+                "source": false
+              },
               "icon": "lucide-file",
-              "title": "新标签页"
+              "title": "UrlToDisplay"
             }
           }
         ]
@@ -137,12 +141,13 @@
             "state": {
               "type": "outline",
               "state": {
+                "file": "docs/blog/FrontEnd/PerformanceOptimization/UrlToDisplay.md",
                 "followCursor": false,
                 "showSearch": false,
                 "searchQuery": ""
               },
               "icon": "lucide-list",
-              "title": "大纲"
+              "title": "UrlToDisplay 的大纲"
             }
           }
         ],
@@ -154,6 +159,7 @@
   },
   "left-ribbon": {
     "hiddenItems": {
+      "bases:创建新数据库": false,
       "switcher:打开快速切换": false,
       "graph:查看关系图谱": false,
       "canvas:新建白板": false,
@@ -165,6 +171,19 @@
   },
   "active": "11b1bf0586c6ffcd",
   "lastOpenFiles": [
+    "docs/blog/FrontEnd/RelatedLanguages/images/Browser/image-20231025103609811.png",
+    "docs/blog/FrontEnd/RelatedLanguages/images/Browser/image-20231023195946986.png",
+    "docs/blog/FrontEnd/RelatedLanguages/images/Browser/1277f342174b23f9442d3b27016d7980.png",
+    "docs/blog/FrontEnd/RelatedLanguages/images/Browser",
+    "docs/blog/FrontEnd/RelatedLanguages/Browser/image-20231025103609811.png",
+    "docs/blog/FrontEnd/RelatedLanguages/Browser/image-20231023195946986.png",
+    "docs/blog/FrontEnd/RelatedLanguages/Browser/1277f342174b23f9442d3b27016d7980.png",
+    "docs/blog/FrontEnd/RelatedLanguages/Browser",
+    "doc_build/static/search_index.a18fe103.json",
+    "doc_build/static",
+    "docs/blog/FrontEnd/RelatedLanguages/浏览器渲染原理简记.md",
+    "doc_build/static/search_index.d174a748.json",
+    "doc_build/static/search_index.e8388ca5.json",
     "docs/blog/FrontEnd/Framework/Vue-React/diff.md",
     "docs/blog/InterviewRelate/2024.8/简历剖析：2024.8.md",
     "docs/blog/InterviewRelate/2024.8/抖音直播一面（寄.md",
@@ -181,22 +200,11 @@
     "doc_build/blog/FrontEnd/Framework/vue3About/Vite.html",
     "doc_build/blog/InterviewRelate/2024.8/字节——国际化商业产品与技术.html",
     "doc_build/blog/InterviewRelate/JS手写题.html",
-    "doc_build/blog/InterviewRelate/2024.9/字节——生活服务前端.html",
-    "doc_build/blog/InterviewRelate/高频算法题.html",
-    "doc_build/blog/InterviewRelate/2024.8/简历剖析：2024.8.html",
-    "doc_build/blog/InterviewRelate/2024.8/抖音直播一面（寄.html",
-    "doc_build/blog/InterviewRelate/2024.9/生活服务面试准备.html",
-    "doc_build/blog/InterviewRelate/2024.8/抖音直播面试准备.html",
     "doc_build/static/image/image-20240122213028202.c5386890.png",
     "doc_build/static/image/img_js_210.7001bec8.png",
     "doc_build/static/image/image-20240307131031495.34a43188.png",
     "doc_build/static/image/image-20240307131638606.c3062e13.png",
     "doc_build/static/image/img_js_211.2f676f45.png",
-    "doc_build/static/image/image-20240307131122735.51dadda3.png",
-    "doc_build/static/image/image-20240307130508749.5974fb5f.png",
-    "doc_build/static/image/image-20240122213650545.6d454579.png",
-    "doc_build/static/image/image-20240122213606841.76c3293f.png",
-    "doc_build/static/image/image-20231116162524940.45d3e6f2.png",
     "docs/blog/FrontEnd/PerformanceOptimization/Concurrency.md",
     "docs/blog/FrontEnd/PerformanceOptimization/MemoryLeakSOP.md",
     "docs/blog/FrontEnd/PerformanceOptimization/内存泄漏排查流程SOP.md",

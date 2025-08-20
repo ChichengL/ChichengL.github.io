@@ -4,7 +4,6 @@ import * as path from "path";
 import mermaid from "rspress-plugin-mermaid";
 import readingTime from "rspress-plugin-reading-time";
 import katex from "rspress-plugin-katex";
-import live2d from "rspress-plugin-live2d";
 import alignImage from "rspress-plugin-align-image";
 import vercelAnalytics from "rspress-plugin-vercel-analytics";
 import fileTree from "rspress-plugin-file-tree";
@@ -25,16 +24,6 @@ export default defineConfig({
     mermaid(),
     readingTime(),
     katex(),
-    live2d({
-      models: [
-        {
-          path: "https://model.oml2d.com/bilibili-22/index.json",
-          position: [0, 60],
-          scale: 0.25,
-          stageStyle: { height: 365 },
-        },
-      ],
-    }),
     alignImage(),
     vercelAnalytics(),
     fileTree(),

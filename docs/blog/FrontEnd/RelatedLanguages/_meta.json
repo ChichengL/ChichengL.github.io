@@ -23,5 +23,10 @@
     "type": "file",
     "name": "NApi.md",
     "label": "NApi"
+  },
+  {
+    "type": "file",
+    "name": "浏览器渲染原理简记.md",
+    "label": "浏览器渲染原理简记"
   }
 ]
