@@ -1109,3 +1109,304 @@ axios.get("https://www.baidu.com", {
   },
 });
 ```
+
+## Promise 相关手写
+
+### Promise 超时
+
+```js
+function withTimeout(fetchFn, { timeout = 5000, message = "超时取消" } = {}) {
+  let timeId;
+  const timeoutPromise = new Promise((_, reject) => {
+    timeId = setTimeout(() => {
+      reject(new Error(message));
+    }, timeout);
+  });
+
+  const enhancedPromise = fetchFn().finally(() => {
+    clearTimeout(timeId);
+  });
+
+  return Promise.race([enhancedPromise, timeoutPromise]);
+}
+
+// 使用示例
+const slowTask = () =>
+  new Promise((resolve) => {
+    setTimeout(() => resolve("任务完成"), 1000); //
+  });
+
+const verySlowTask = () =>
+  new Promise((resolve) => {
+    setTimeout(() => resolve("任务完成"), 6000);
+  });
+
+// 测试正常完成的任务
+withTimeout(slowTask)
+  .then(console.log) // 输出："任务完成"
+  .catch((err) => console.error(err.message));
+
+// 测试超时的任务
+withTimeout(verySlowTask)
+  .then(console.log)
+  .catch((err) => console.error(err.message)); // 输出："超时取消"
+```
+
+### 可以取消的 Promise
+
+```js
+/**
+ * 创建可取消的Promise
+ * @param {Function} executor 执行器函数，接收(resolve, reject, onCancel)
+ * @returns {Object} { promise, cancel } 包含Promise和取消函数
+ */
+function createCancellablePromise(executor) {
+  let cancel;
+  const promise = new Promise((resolve, reject) => {
+    // 定义取消逻辑：外部调用cancel时触发reject
+    cancel = (reason = "操作已取消") => {
+      reject(new Error(reason));
+    };
+    // 执行器函数可注册取消时的清理逻辑（如终止请求）
+    executor(resolve, reject, (cleanup) => {
+      const originalCancel = cancel;
+      cancel = () => {
+        cleanup(); // 执行清理（如abort请求）
+        originalCancel(); // 触发reject
+      };
+    });
+  });
+  return { promise, cancel };
+}
+
+// 使用示例：模拟可取消的接口请求
+const { promise, cancel } = createCancellablePromise(
+  (resolve, reject, onCancel) => {
+    const xhr = new XMLHttpRequest();
+    xhr.open("GET", "https://api.example.com/data");
+    xhr.onload = () => resolve(xhr.responseText);
+    xhr.onerror = () => reject(new Error("请求失败"));
+    xhr.send();
+
+    // 注册取消时的清理逻辑：终止XHR请求
+    onCancel(() => xhr.abort());
+  }
+);
+
+// 3秒后若未完成则取消
+setTimeout(cancel, 3000);
+promise.catch((err) => console.error(err.message)); // 3秒后输出："操作已取消"
+```
+
+#### 引申：可取消的 fetch
+
+```js
+const controller = new AbortController();
+fetch("https://api.example.com", { signal: controller.signal }).catch((err) => {
+  if (err.name === "AbortError") console.log("请求已取消");
+});
+
+// 取消请求
+controller.abort();
+```
+
+### 带有重试的 请求
+
+```js
+/**
+ * 为Promise添加重试机制
+ * @param {Function} fn 返回Promise的函数（需重试的操作）
+ * @param {number} maxRetries 最大重试次数
+ * @param {number} delay 重试间隔（毫秒）
+ * @returns {Promise} 包装后的Promise
+ */
+function withRetry(fn, maxRetries = 3, delay = 1000) {
+  return fn().catch((err) => {
+    if (maxRetries <= 0) {
+      return Promise.reject(new Error(`达到最大重试次数: ${err.message}`));
+    }
+    // 等待delay后重试，重试次数减1
+    return new Promise((resolve) => setTimeout(resolve, delay)).then(() =>
+      withRetry(fn, maxRetries - 1, delay)
+    );
+  });
+}
+
+// 使用示例：模拟一个可能失败的请求（50%概率成功）
+function unstableRequest() {
+  return new Promise((resolve, reject) => {
+    Math.random() > 0.5 ? resolve("成功") : reject(new Error("随机失败"));
+  });
+}
+
+withRetry(unstableRequest, 3, 500)
+  .then(console.log) // 若3次内成功则输出"成功"
+  .catch((err) => console.error(err.message));
+```
+
+### 串行 Promise
+
+```js
+/**
+ * 串行执行多个Promise任务
+ * @param {Array<Function>} tasks 返回Promise的函数数组
+ * @returns {Promise<Array>} 所有任务的结果数组（按执行顺序）
+ */
+function serialExecute(tasks) {
+  return tasks.reduce((prev, task) => {
+    return prev.then((results) =>
+      task().then((result) => [...results, result])
+    );
+  }, Promise.resolve([])); // 初始值为 resolved 的空数组
+}
+
+// 使用示例：3个异步任务，按顺序执行
+const tasks = [
+  () => new Promise((resolve) => setTimeout(() => resolve(1), 1000)),
+  () => new Promise((resolve) => setTimeout(() => resolve(2), 500)),
+  () => new Promise((resolve) => setTimeout(() => resolve(3), 800)),
+];
+
+serialExecute(tasks).then(console.log); // 约2300ms后输出：[1, 2, 3]
+```
+
+### 带缓存的 Promise
+
+```js
+/**
+ * 创建带缓存的异步函数
+ * @param {Function} fn 接收参数并返回Promise的函数
+ * @param {number} ttl 缓存有效期（毫秒，0为永久）
+ * @returns {Function} 带缓存的函数
+ */
+function withCache(fn, ttl = 0) {
+  const cache = new Map(); // key: 参数字符串, value: { result, expireTime }
+
+  return (...args) => {
+    const key = JSON.stringify(args); // 将参数转为字符串作为key
+    const cached = cache.get(key);
+
+    // 若缓存存在且未过期，直接返回缓存结果
+    if (cached && (ttl === 0 || Date.now() < cached.expireTime)) {
+      return Promise.resolve(cached.result);
+    }
+
+    // 执行原函数，并存入缓存
+    return fn(...args).then((result) => {
+      cache.set(key, {
+        result,
+        expireTime: ttl === 0 ? Infinity : Date.now() + ttl,
+      });
+      return result;
+    });
+  };
+}
+
+// 使用示例：缓存接口请求结果（10秒内重复调用不发请求）
+const fetchUser = withCache((id) => {
+  console.log(`发送请求获取用户${id}`);
+  return fetch(`https://api.example.com/user/${id}`).then((r) => r.json());
+}, 10000);
+
+// 第一次调用：发送请求
+fetchUser(1).then(console.log);
+// 10秒内再次调用：直接返回缓存，不打印"发送请求"
+setTimeout(() => fetchUser(1).then(console.log), 5000);
+```
+
+### 限制并发数量
+
+```js
+/**
+ * 限制并发数执行异步任务
+ * @param {Array<Function>} tasks 返回Promise的函数数组
+ * @param {number} limit 最大并发数
+ * @returns {Promise<Array>} 所有任务的结果数组（按原顺序）
+ */
+function limitConcurrency(tasks, limit) {
+  const results = [];
+  let index = 0; // 当前任务索引
+  let running = 0; // 正在运行的任务数
+
+  return new Promise((resolve) => {
+    // 执行任务的函数
+    function run() {
+      if (index >= tasks.length && running === 0) {
+        // 所有任务完成，返回结果
+        return resolve(results);
+      }
+      // 若未达并发上限且有任务未执行，继续执行
+      while (running < limit && index < tasks.length) {
+        const taskIndex = index++;
+        running++;
+        // 执行当前任务
+        tasks[taskIndex]()
+          .then((result) => {
+            results[taskIndex] = result; // 按原顺序存储结果
+          })
+          .catch((err) => {
+            results[taskIndex] = err; // 存储错误
+          })
+          .finally(() => {
+            running--;
+            run(); // 继续执行下一个任务
+          });
+      }
+    }
+    // 启动执行
+    run();
+  });
+}
+
+// 使用示例：5个任务，限制最大并发数为2
+const tasks = Array.from(
+  { length: 5 },
+  (_, i) => () =>
+    new Promise((resolve) => {
+      console.log(`任务${i + 1}开始`);
+      setTimeout(() => {
+        console.log(`任务${i + 1}完成`);
+        resolve(i + 1);
+      }, 1000);
+    })
+);
+
+limitConcurrency(tasks, 2).then(console.log); // 最终输出：[1,2,3,4,5]
+```
+
+控制并发还有这种
+
+```js
+class Concurrency {
+  constructor(limit) {
+    this.limit = limit;
+    this.running = 0;
+    this.tasks = [];
+  }
+  async add(task) {
+    if (this.running < this.limit) {
+      this.runTask(task);
+    } else {
+      await Promise((resolve) => this.tasks.push(resolve));
+      this.runTask(task);
+    }
+  }
+  runTask(task) {
+    this.running++;
+    task().then(() => {
+      this.running--;
+      if (this.tasks.length > 0) {
+        //说明有任务在等待
+        const next = this.tasks.shift();
+        next();
+      }
+    });
+  }
+}
+const c = new Concurrency();
+c.add(task(1000, 1));
+c.add(task(500, 2));
+c.add(task(300, 3));
+c.add(task(400, 4));
+//期望输出2,3,1,4
+```

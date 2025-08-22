@@ -4,21 +4,17 @@
     "type": "split",
     "children": [
       {
-        "id": "ae1a66cdab355ab2",
+        "id": "9ce638600675e7c5",
         "type": "tabs",
         "children": [
           {
-            "id": "11b1bf0586c6ffcd",
+            "id": "0d02c78a8c1efee7",
             "type": "leaf",
             "state": {
-              "type": "markdown",
-              "state": {
-                "file": "docs/blog/FrontEnd/PerformanceOptimization/UrlToDisplay.md",
-                "mode": "source",
-                "source": false
-              },
+              "type": "empty",
+              "state": {},
               "icon": "lucide-file",
-              "title": "UrlToDisplay"
+              "title": "新标签页"
             }
           }
         ]
@@ -141,13 +137,12 @@
             "state": {
               "type": "outline",
               "state": {
-                "file": "docs/blog/FrontEnd/PerformanceOptimization/UrlToDisplay.md",
                 "followCursor": false,
                 "showSearch": false,
                 "searchQuery": ""
               },
               "icon": "lucide-list",
-              "title": "UrlToDisplay 的大纲"
+              "title": "大纲"
             }
           }
         ],
@@ -169,8 +164,12 @@
       "obsidian-excalidraw-plugin:新建绘图文件": false
     }
   },
-  "active": "11b1bf0586c6ffcd",
+  "active": "0d02c78a8c1efee7",
   "lastOpenFiles": [
+    "docs/blog/FrontEnd/PerformanceOptimization/UrlToDisplay.md",
+    "docs/blog/InterviewRelate/otherInterview/_meta.json",
+    "docs/blog/InterviewRelate/otherInterview/xhs-tencent.md",
+    "docs/blog/InterviewRelate/otherInterview",
     "docs/blog/FrontEnd/RelatedLanguages/images/Browser/image-20231025103609811.png",
     "docs/blog/FrontEnd/RelatedLanguages/images/Browser/image-20231023195946986.png",
     "docs/blog/FrontEnd/RelatedLanguages/images/Browser/1277f342174b23f9442d3b27016d7980.png",
@@ -198,13 +197,10 @@
     "docs/blog/FrontEnd/Framework/vue3About/Vue3源码学习.md",
     "doc_build/blog/FrontEnd/Framework/vue3About/手写Pinia小记.html",
     "doc_build/blog/FrontEnd/Framework/vue3About/Vite.html",
-    "doc_build/blog/InterviewRelate/2024.8/字节——国际化商业产品与技术.html",
-    "doc_build/blog/InterviewRelate/JS手写题.html",
     "doc_build/static/image/image-20240122213028202.c5386890.png",
     "doc_build/static/image/img_js_210.7001bec8.png",
     "doc_build/static/image/image-20240307131031495.34a43188.png",
     "doc_build/static/image/image-20240307131638606.c3062e13.png",
-    "doc_build/static/image/img_js_211.2f676f45.png",
     "docs/blog/FrontEnd/PerformanceOptimization/Concurrency.md",
     "docs/blog/FrontEnd/PerformanceOptimization/MemoryLeakSOP.md",
     "docs/blog/FrontEnd/PerformanceOptimization/内存泄漏排查流程SOP.md",
