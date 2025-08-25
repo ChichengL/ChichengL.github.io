@@ -42,6 +42,13 @@
     "collapsed": true
   },
   {
+    "type": "dir",
+    "name": "CollectedInterviews",
+    "label": "面经收集",
+    "collapsible": true,
+    "collapsed": true
+  },
+  {
     "type": "file",
     "name": "JS手写题.md",
     "label": "JS手写题"
