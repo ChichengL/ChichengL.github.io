@@ -4,11 +4,11 @@
     "type": "split",
     "children": [
       {
-        "id": "9ce638600675e7c5",
+        "id": "1aba393426259e1b",
         "type": "tabs",
         "children": [
           {
-            "id": "0d02c78a8c1efee7",
+            "id": "965510398b8d4231",
             "type": "leaf",
             "state": {
               "type": "empty",
@@ -164,8 +164,12 @@
       "obsidian-excalidraw-plugin:新建绘图文件": false
     }
   },
-  "active": "0d02c78a8c1efee7",
+  "active": "965510398b8d4231",
   "lastOpenFiles": [
+    "docs/blog/FrontEnd/Framework/React/React三大基石.md",
+    "docs/blog/InterviewRelate/2024.8/cxh——国际化前端.md",
+    "docs/blog/InterviewRelate/2024.8/字节——国际化商业产品与技术.md",
+    "docs/blog/index.mdx",
     "docs/blog/ComputerBasis/OS~.md",
     "docs/blog/ComputerBasis/OS.md",
     "docs/blog/ComputerBasis/Untitled.md",
@@ -199,7 +203,6 @@
     "docs/blog/InterviewRelate/2024.5/5月份面试总结.md",
     "docs/blog/FrontEnd/Framework/vue3About/Vue3源码学习.md",
     "doc_build/blog/FrontEnd/Framework/vue3About/手写Pinia小记.html",
-    "doc_build/blog/FrontEnd/Framework/vue3About/Vite.html",
     "doc_build/static/image/image-20240122213028202.c5386890.png",
     "doc_build/static/image/img_js_210.7001bec8.png",
     "doc_build/static/image/image-20240307131031495.34a43188.png",
@@ -208,9 +211,6 @@
     "docs/blog/FrontEnd/PerformanceOptimization/MemoryLeakSOP.md",
     "docs/blog/FrontEnd/PerformanceOptimization/内存泄漏排查流程SOP.md",
     "docs/experience/myLife/基础复习.md",
-    "docs/blog/浏览器渲染原理简记.md",
-    "docs/experience/index.md",
-    "docs/experience/与前端的经历.md",
-    "docs/blog/FrontEnd/Framework/Vue-React/update.md"
+    "docs/blog/浏览器渲染原理简记.md"
   ]
 }

@@ -1,4 +1,4 @@
-# JS 手写题
+## JS 手写题
 
 ### 防抖节流
 
@@ -959,4 +959,244 @@ setTimeout(() => {
 }, 10);
 
 console.log("26");
+```
+
+## JS 技巧
+
+### 用于异步 IIFE 的  void  守卫 (The Void Guard)
+
+问题所在：  立即调用的异步函数 (IIFE) 可能会创建“悬空 Promise (floating promises)”，如果处理不当，会导致内存泄漏和未捕获的异常。
+
+```js
+// ❌ 风险操作 - 返回一个悬空的 promise，其结果或错误未被处理
+(async () => {
+  await initializeApp();
+})();
+
+// ✅ 安全操作 - 使用 void 明确表示我们不关心其返回结果
+void (async () => {
+  await initializeApp();
+})();
+```
+
+说明：void  操作符会执行其后的表达式，然后返回  undefined。这等于明确地丢弃了 Promise 的返回值，向代码阅读者和静态分析工具表明，我们是有意不处理这个 Promise 的结果，从而有效防止了“未处理的 Promise rejection”警告。此模式对于应用启动时执行的“即发即忘”(fire-and-forget) 型异步操作至关重要。
+
+### 高精度异步计时
+
+```js
+/**
+ * 测量一个异步函数的执行时间
+ * @param name - 测量项的名称，用于在性能条目中识别
+ * @param fn - 需要被测量的、返回 Promise 的异步函数
+ * @returns 返回原始异步函数的执行结果
+ */
+const measureAsync = async (name, fn) => {
+  // 标记测量开始点
+  performance.mark(`${name}-start`);
+  try {
+    // 执行并等待传入的异步函数 fn 完成
+    return await fn();
+  } finally {
+    // 标记测量结束点
+    performance.mark(`${name}-end`); // 计算从开始到结束的耗时，并创建一个名为 `name` 的性能测量条目
+
+    performance.measure(name, `${name}-start`, `${name}-end`); // 获取刚刚创建的测量条目
+
+    const [entry] = performance.getEntriesByName(name); // 打印格式化的耗时，精确到毫秒后三位
+    console.log(`⏱️ ${name}: ${entry.duration.toFixed(3)}ms`); // 清除标记，避免性能条目列表无限增长导致内存问题
+
+    performance.clearMarks(`${name}-start`);
+    performance.clearMarks(`${name}-end`);
+    performance.clearMeasures(name);
+  }
+};
+
+// 使用示例:
+await measureAsync("数据库事务", () => db.transaction(complexQuery));
+```
+
+核心优势：  此方法会自动生成详细的性能时间线，这些数据可以在 Chrome 开发者工具的  Performance（性能）面板中进行可视化分析。
+
+### 使用  AbortController  进行 Promise 编排
+
+```js
+/**
+ * 创建一个可被取消的 Promise 池
+ * @param promises - 一组待执行的 Promise
+ * @param signal - AbortSignal 实例，用于发出取消信号
+ * @returns 返回一个 Promise.all 包装的 Promise
+ */
+const createCancellablePool = (
+  promises: Promise<any>[],
+  signal: AbortSignal
+) => {
+  return Promise.all(
+    promises.map((p) =>
+      newPromise((resolve, reject) => {
+        // 如果信号已经发出，立即拒绝
+        if (signal.aborted) {
+          return reject(new DOMException("操作已取消", "AbortError"));
+        } // 监听 abort 事件，一旦触发就拒绝 Promise
+
+        signal.addEventListener("abort", () =>
+          reject(new DOMException("操作已取消", "AbortError"))
+        ); // 正常执行原始 Promise
+
+        p.then(resolve).catch(reject);
+      })
+    )
+  );
+};
+
+// 使用示例:
+const controller = new AbortController();
+
+// 2秒后发出取消信号
+setTimeout(() => controller.abort(), 2000);
+
+try {
+  await createCancellablePool(
+    [
+      analyticsSync(), // 模拟分析数据同步
+      cacheHydration(), // 模拟缓存预热
+    ],
+    controller.signal
+  );
+} catch (err) {
+  if (err.name === "AbortError") {
+    console.log("后台任务已被成功取消！");
+  }
+}
+```
+
+关键用例：  当用户在单页应用 (SPA) 中切换路由时，可以利用此模式取消仍在后台运行的数据同步或预加载任务，避免不必要的计算和网络资源浪费。
+
+### 使用生成器 (Generators) 实现惰性 Promise 流
+
+```js
+/**
+ * 异步生成器函数，用于按需获取和产出数据
+ * @param urls - URL 数组
+ */
+async function* streamResults<T>(urls: string[]): AsyncGenerator<T> {
+for (const url of urls) {
+    const response = await fetch(url);
+    // `yield` 会暂停函数执行，并产出一个值
+    // 当消费者请求下一个值时，函数会从此处继续
+    yield response.json() as T;
+  }
+}
+
+// 使用示例:
+// 创建一个视频数据流，此时并不会立即发起所有请求
+const videoStream = streamResults<Video>(videoUrls);
+
+// 使用 for await...of 循环来按需消费数据流
+for await (const video of videoStream) {
+// 可以在任何时候停止处理
+if (shouldStopProcessing(video)) {
+    break; // 退出循环，未处理的 URL 请求将不会被发出
+  }
+  renderPreview(video);
+}
+```
+
+### 使用类型化数组 (Typed Arrays) 精通二进制数据
+
+```js
+/**
+ * 高效合并多个 ArrayBuffer
+ * @param buffers - ArrayBuffer 数组
+ * @returns 合并后的新 ArrayBuffer
+ */
+const mergeBuffers = (buffers: ArrayBuffer[]) => {
+  // 计算所有 buffer 的总字节长度
+  const totalLength = buffers.reduce((sum, b) => sum + b.byteLength, 0);
+  // 创建一个足够大的 Uint8Array 视图来容纳所有数据
+  const result = newUint8Array(totalLength);
+
+  let offset = 0;
+  buffers.forEach((buffer) => {
+    // 将每个 buffer 的数据设置到结果数组的正确位置
+    result.set(newUint8Array(buffer), offset);
+    // 更新偏移量，为下一个 buffer 做准备
+    offset += buffer.byteLength;
+  });
+
+  // 返回底层的 ArrayBuffer
+  return result.buffer;
+};
+
+/**
+ * 零拷贝切片 ( Bonus: Zero-copy slicing )
+ * 注意：ES2017+ 的 ArrayBuffer.prototype.slice() 会创建副本。
+ * TypedArray.prototype.subarray() 才是真正的零拷贝（共享同一底层 buffer）。
+ * 这里为了与原文保持一致，使用了 slice，但在现代 JS 中，这会是拷贝操作。
+ * 真正的零拷贝视图应该用 subarray。
+ * @param buffer - 原始 ArrayBuffer
+ * @param start - 开始字节索引
+ * @param end - 结束字节索引
+ * @returns 一个新的 ArrayBuffer，包含切片的数据
+ */
+const sliceWithCopy = (buffer: ArrayBuffer, start: number, end: number) => {
+  // buffer.slice 是一个拷贝操作
+  return buffer.slice(start, end);
+};
+```
+
+### Promise 并发池 (Promise Pool)
+
+```js
+class PromisePool {
+  private running = 0; // 当前正在运行的任务数
+  private queue: (() => void)[] = []; // 等待执行的任务队列
+
+  constructor(private concurrency: number) {} // 并发上限
+
+  /**
+   * 运行一个任务
+   * @paramtask - 一个返回 Promise 的函数
+   * @returns 返回一个 Promise，其结果与 task 的 Promise 一致
+   */
+  async run<T>(task: () => Promise<T>): Promise<T> {
+    return new Promise((resolve, reject) => {
+      // 将要执行的任务封装一下
+      const execute = async () => {
+        this.running++;
+        try {
+          const result = await task();
+          resolve(result);
+        } catch (err) {
+          reject(err);
+        } finally {
+          this.running--;
+          // 当前任务完成后，尝试执行队列中的下一个任务
+          this.next();
+        }
+      };
+
+      // 将任务推入队列，并尝试立即执行
+      this.queue.push(execute);
+      this.next();
+    });
+  }
+
+  /**
+   * 检查是否可以执行新任务，并从队列中取出一个来执行
+   */
+  private next() {
+    // 当队列不为空且当前运行的任务数小于并发上限时
+    while (this.queue.length > 0 && this.running < this.concurrency) {
+      // 从队列头部取出一个任务并执行
+      this.queue.shift()!();
+    }
+  }
+}
+
+// 使用示例:
+// 创建一个并发数为 3 的池子 (比如数据库最大连接数是3)
+const pool = newPromisePool(3);
+// 假设有10个报告要生成
+const tasks = Array.from({ length: 10 }, (_, i) => pool.run(() => generateReport(i + 1)));
+await Promise.all(tasks);
 ```
