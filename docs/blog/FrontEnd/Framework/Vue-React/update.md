@@ -11,13 +11,34 @@ React 的更新机制以其独特的 Fiber 架构为核心，采用一种可中�
 1. 触发更新（Trigger）:
 
 - 更新的起点通常是组件状态的变更，例如调用 this.setState() 或 useState 的 setter 函数。
+  **状态更新触发，创建「Update 任务」**
+  同时，React 会将这个 Update 对象加入到对应组件 Fiber 节点的 UpdateQueue（更新队列） 中（每个 Fiber 节点都有自己的 UpdateQueue，保证组件更新隔离）。
+
 - 每次更新都会被赋予一个优先级（Lane），用于后续的调度决策。
+  **Lane 优先级分配 —— 给任务 “贴优先级标签”**
+  - 常见 Lane 优先级（从高到低）：
+    - ImmediateLane：同步优先级（如 flushSync 包裹的更新），必须立即执行，阻塞其他任务；
+    - UserBlockingLane：用户交互优先级（如点击、输入），优先级高，避免用户感知卡顿；
+    - NormalLane：普通优先级（如定时器回调、网络请求回调）；
+    - LowLane/IdleLane：低优先级（如列表滚动时的非关键更新、统计上报），可被高优先级任务打断。
+  - 例子：
+    - 用户点击按钮触发的 setState → 分配 UserBlockingLane；
+    - setTimeout 回调中的 setState → 分配 NormalLane。
 
 2. 调度阶段（Scheduler）:
 
 - React 不会立即处理每次状态变更，而是通过调度器来管理更新任务。
 - 调度器根据更新的优先级决定何时执行协调过程。高优先级的更新（如用户输入）会插队，而低优先级的更新（如数据获取）可能会被延迟、合并甚至中断。
-- 此阶段确保了应用的响应性，避免了长时间的渲染阻塞。
+  - 根据 Lane 优先级，判断是 “同步任务” 还是 “异步任务”：
+    - 高优先级 Lane（如 ImmediateLane）→ 同步任务，直接进入 “同步执行队列”，立即执行；
+    - 中低优先级 Lane（如 UserBlockingLane、NormalLane）→ 异步任务，进入 “异步任务队列”，等待浏览器空闲时执行。
+    - 高优先级任务 “插队”：如果新任务的 Lane 优先级高于队列中已有的任务，Scheduler 会暂停当前执行的低优先级任务，优先执行新的高优先级任务（这是 Concurrent Mode 的核心能力）。
+    - 任务入队格式：Scheduler 会将 “执行更新的回调函数（如 performSyncWorkOnRoot/performConcurrentWorkOnRoot）” 和对应的 Lane 优先级绑定，一起加入队列
+  - 同一事件循环内合并同优先级任务
+    - React 会在 同一浏览器事件循环（Event Loop）的宏任务阶段，对 “相同组件、相同 Lane 优先级” 的更新任务进行合并，避免重复执行，核心逻辑：
+      - 合并时机：当同一事件循环内多次触发同一组件的同优先级更新（如短时间内连续调用 setState(prev => prev + 1)），React 不会创建多个独立任务，而是将这些更新合并到同一个 UpdateQueue 中。
+      - 合并规则：对于 “函数式更新”（如 setCount(prev => prev + 1)），React 会按顺序执行所有更新函数（保证最终结果正确）；对于 “值更新”（如 setCount(count + 1)），由于闭包问题，React 会取最后一次更新的值（但推荐用函数式更新避免此问题）。
+      - 底层实现：在 scheduleCallback（Scheduler 的核心函数）中，React 会检查当前事件循环是否已有同优先级的任务，如果有，则复用该任务，只更新 UpdateQueue 的内容，避免重复调度。
 
 3. 协调阶段（Reconciler / Render Phase）:
 
@@ -35,6 +56,8 @@ React 的更新机制以其独特的 Fiber 架构为核心，采用一种可中�
 - 提交阶段还包括调用生命周期方法（如 componentDidMount, componentDidUpdate）和 Hooks（如 useEffect, useLayoutEffect）。
 
 > 核心理念：**React 的更新是“pull-based”的**。它不会精确地知道是哪个状态变了，而是当状态变更时，它会“拉取”整个组件树的信息，通过自顶向下的 Diff 过程找出需要更新的部分。Fiber 架构的引入使得这个庞大的 Diff 过程可以被拆分成小任务，异步执行，从而避免阻塞浏览器主线程。
+
+React 的 Fiber 承担了虚拟 DOM+组件实例
 
 ### 关键源码解读
 
@@ -101,6 +124,34 @@ Vue 的更新机制构建在其精细的响应式系统之上。**它能够精�
 - 渲染函数会生成一个新的 VNode (Virtual DOM) 树。
 - Vue 的渲染器（Renderer）会调用 patch 函数，对新旧两棵 VNode 树进行 Diffing。
 - patch 函数会高效地找出两棵树之间的最小差异，并只将这些差异应用到真实的 DOM 上，完成最终的页面更新。
+
+Vue3 的虚拟 DOM 和组件实例职责清晰
+
+```js
+const vnode = {
+  type: "div", // 或组件对象（如App）
+  props: { className: "xxx" }, // DOM属性或组件props
+  children: [
+    /* 子VNode */
+  ], // 子节点
+  patchFlag: 0b10, // 编译优化标识（如仅props更新）
+  component: null, // 关键：仅当type是组件时，指向「组件实例」
+  el: null, // 指向最终渲染的真实DOM
+};
+```
+
+```js
+const componentInstance = {
+  vnode: vnode, // 关键：指向当前组件对应的VNode（双向引用）
+  type: App, // 组件定义（如setup函数、options）
+  ctx: { count: ref(0) }, // 组件上下文：存储ref/reactive状态、setup返回值
+  setupState: { count: 0 }, // setup函数返回的状态（如const { count } = setup()）
+  data: {}, // 选项式API的data（已兼容到setupState）
+  props: { msg: "hello" }, // 接收的props（响应式）
+  emit: (event) => {}, // 事件触发函数
+  // 其他生命周期、依赖收集相关属性
+};
+```
 
 关键源码解读
 以下是 Vue 3 响应式和运行时核心中的关键函数：
