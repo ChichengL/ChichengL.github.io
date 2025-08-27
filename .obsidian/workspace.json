@@ -4,11 +4,11 @@
     "type": "split",
     "children": [
       {
-        "id": "1aba393426259e1b",
+        "id": "582a13990ffb9cc6",
         "type": "tabs",
         "children": [
           {
-            "id": "965510398b8d4231",
+            "id": "b969f4ecc7960b7e",
             "type": "leaf",
             "state": {
               "type": "empty",
@@ -164,8 +164,9 @@
       "obsidian-excalidraw-plugin:新建绘图文件": false
     }
   },
-  "active": "965510398b8d4231",
+  "active": "b969f4ecc7960b7e",
   "lastOpenFiles": [
+    "docs/index.mdx",
     "docs/blog/FrontEnd/Framework/React/React三大基石.md",
     "docs/blog/InterviewRelate/2024.8/cxh——国际化前端.md",
     "docs/blog/InterviewRelate/2024.8/字节——国际化商业产品与技术.md",
@@ -210,7 +211,6 @@
     "docs/blog/FrontEnd/PerformanceOptimization/Concurrency.md",
     "docs/blog/FrontEnd/PerformanceOptimization/MemoryLeakSOP.md",
     "docs/blog/FrontEnd/PerformanceOptimization/内存泄漏排查流程SOP.md",
-    "docs/experience/myLife/基础复习.md",
-    "docs/blog/浏览器渲染原理简记.md"
+    "docs/experience/myLife/基础复习.md"
   ]
 }
