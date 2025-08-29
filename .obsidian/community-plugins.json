@@ -1,5 +1,7 @@
 [
   "obsidian-image-toolkit",
   "obsidian-excalidraw-plugin",
-  "mdx-as-md-obsidian"
+  "mdx-as-md-obsidian",
+  "obsidian-style-settings",
+  "obsidian-minimal-settings"
 ]

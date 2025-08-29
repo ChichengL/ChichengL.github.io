@@ -13,12 +13,12 @@
             "state": {
               "type": "markdown",
               "state": {
-                "file": "docs/blog/InterviewRelate/2025.8/美团校招——基建侧.md",
+                "file": "docs/blog/InterviewRelate/CollectedInterviews/bytedance-answer.md",
                 "mode": "source",
                 "source": false
               },
               "icon": "lucide-file",
-              "title": "美团校招——基建侧"
+              "title": "bytedance-answer"
             }
           }
         ]
@@ -141,13 +141,13 @@
             "state": {
               "type": "outline",
               "state": {
-                "file": "docs/blog/InterviewRelate/2025.8/美团校招——基建侧.md",
+                "file": "docs/blog/InterviewRelate/CollectedInterviews/bytedance-answer.md",
                 "followCursor": false,
                 "showSearch": false,
                 "searchQuery": ""
               },
               "icon": "lucide-list",
-              "title": "美团校招——基建侧 的大纲"
+              "title": "bytedance-answer 的大纲"
             }
           }
         ],
@@ -171,6 +171,11 @@
   },
   "active": "b969f4ecc7960b7e",
   "lastOpenFiles": [
+    "docs/blog/InterviewRelate/2025.8/小红书校招——社区前端.md",
+    "docs/blog/InterviewRelate/CollectedInterviews/bytedance-question.md",
+    "docs/blog/InterviewRelate/CollectedInterviews/bytedance-answer.md",
+    "docs/blog/FrontEnd/Framework/Vue-React/diff.md",
+    "docs/blog/InterviewRelate/2025.8/美团校招——基建侧.md",
     "docs/index.mdx",
     "docs/blog/FrontEnd/Framework/React/React三大基石.md",
     "docs/blog/InterviewRelate/2024.8/cxh——国际化前端.md",
@@ -196,7 +201,6 @@
     "docs/blog/FrontEnd/RelatedLanguages/浏览器渲染原理简记.md",
     "doc_build/static/search_index.d174a748.json",
     "doc_build/static/search_index.e8388ca5.json",
-    "docs/blog/FrontEnd/Framework/Vue-React/diff.md",
     "docs/blog/InterviewRelate/2024.8/简历剖析：2024.8.md",
     "docs/blog/InterviewRelate/2024.8/抖音直播一面（寄.md",
     "docs/blog/InterviewRelate/2024.8/抖音直播面试准备.md",
@@ -208,14 +212,10 @@
     "docs/blog/InterviewRelate/2024.5/24-3-13面试复盘.md",
     "docs/blog/InterviewRelate/2024.5/5月份面试总结.md",
     "docs/blog/FrontEnd/Framework/vue3About/Vue3源码学习.md",
-    "doc_build/blog/FrontEnd/Framework/vue3About/手写Pinia小记.html",
     "doc_build/static/image/image-20240122213028202.c5386890.png",
     "doc_build/static/image/img_js_210.7001bec8.png",
     "doc_build/static/image/image-20240307131031495.34a43188.png",
     "doc_build/static/image/image-20240307131638606.c3062e13.png",
-    "docs/blog/FrontEnd/PerformanceOptimization/Concurrency.md",
-    "docs/blog/FrontEnd/PerformanceOptimization/MemoryLeakSOP.md",
-    "docs/blog/FrontEnd/PerformanceOptimization/内存泄漏排查流程SOP.md",
-    "docs/experience/myLife/基础复习.md"
+    "docs/blog/FrontEnd/PerformanceOptimization/Concurrency.md"
   ]
 }
