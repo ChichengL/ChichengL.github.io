@@ -28,10 +28,5 @@
     "type": "file",
     "name": "浏览器渲染原理简记.md",
     "label": "浏览器渲染原理简记"
-  },
-  {
-    "type": "file",
-    "name": "Engineered.md",
-    "label": "工程化相关"
   }
 ]
