@@ -650,6 +650,51 @@ function convert(arr, parentId) {
 
 ### Promise 手写
 
+### 计算小数
+
+```js
+//给出两个数，计算他们相除的结果，如果小数部分有循环，`0.(6)`，如果没有循环那么直接返回值
+function calculateDecimal(a, b) {
+  // 如果没有循环直接返回，比如1/2 = 0.5 有循环则返回循环后的，比如2/3 = 0.(6)
+  if (numerator % denominator === 0) {
+    return `${numerator / denominator}`;
+  }
+
+  // 处理负数情况
+  const sign = (numerator < 0) ^ (denominator < 0) ? "-" : "";
+  numerator = Math.abs(numerator);
+  denominator = Math.abs(denominator);
+
+  // 整数部分
+  const integerPart = Math.floor(numerator / denominator);
+  let remainder = numerator % denominator;
+
+  // 小数部分
+  let decimalPart = "";
+  const remainderMap = new Map(); // 记录余数和其在小数部分的位置
+  let position = 0;
+
+  // 计算小数部分，直到余数为0或者出现循环
+  while (remainder !== 0 && !remainderMap.has(remainder)) {
+    remainderMap.set(remainder, position++);
+    remainder *= 10;
+    decimalPart += Math.floor(remainder / denominator);
+    remainder %= denominator;
+  }
+
+  // 如果余数为0，表示除尽了，没有循环
+  if (remainder === 0) {
+    return `${sign}${integerPart}.${decimalPart}`;
+  } else {
+    // 出现循环
+    const index = remainderMap.get(remainder);
+    const nonRepeating = decimalPart.substring(0, index);
+    const repeating = decimalPart.substring(index);
+    return `${sign}${integerPart}.${nonRepeating}(${repeating})`;
+  }
+}
+```
+
 ### React 自定义 hook
 
 #### useFetch

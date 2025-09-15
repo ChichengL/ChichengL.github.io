@@ -34,7 +34,7 @@ export default function YearProgress() {
   return (
     <div
       style={{
-        width: "400px",
+        maxWidth: "400px",
         backgroundColor: "var(--year-progress-bg)", // 使用CSS变量
         borderRadius: "16px",
         padding: "16px",

@@ -433,3 +433,391 @@ const batchFetch = (fetches,limit)=>{
 ```
 
 19. 反问
+
+## 字节 电商内容 一面
+
+1. 大数相加
+
+```js
+// 1. 大数相加
+function bigAdd(numA, numB) {
+  //先分为整数和分数
+  let [ia, fa = "0"] = numA.toString().split(".");
+  let [ib, fb = "0"] = numB.toString().split(".");
+
+  //先处理分数相加
+  //比如123.456+23.45这里-> 0.456+0.45
+  while (fa.length < fb.length) {
+    fa = fa + "0";
+  }
+  while (fb.length < fa.length) {
+    fb = fb + "0";
+  }
+  let f = runAdd(fa, fb);
+  let i = runAdd(ia, ib);
+  //整数可以超过js的number范围，转化为字符串处理
+
+  if (f.length > fa.length) {
+    //说明发生了进位
+    i = runAdd(i, "1");
+    f = f.substring(1);
+  }
+  return i + "." + f;
+
+  function reverse(str) {
+    let res = "";
+    for (let i = str.length - 1; i >= 0; i--) {
+      res += str[i];
+    }
+    return res;
+  }
+  /**
+   *
+   * @param {string} numA 翻转之前的数字字符串
+   * @param {string} numB 翻转之前的数字字符串
+   */
+  function runAdd(numA, numB) {
+    let res = "";
+    let x = 0;
+    const sa = reverse(numA + "");
+    const sb = reverse(numB + "");
+    for (let i = 0; i < Math.max(sa.length, sb.length); i++) {
+      const a = Number(sa[i] || 0);
+      const b = Number(sb[i] || 0);
+      res += (a + b + x) % 10;
+      x = Math.floor((a + b + x) / 10);
+    }
+    if (x) res += x;
+    return reverse(res);
+  }
+}
+```
+
+2. 手写 Promise.all
+
+```js
+function promiseAll(promiseList) {
+  return new Promise((resolve, reject) => {
+    let res = [];
+    let idx = 0;
+
+    const run = () => {
+      if (idx >= promiseList.length) {
+        resolve(res);
+      }
+      const i = idx++;
+      const promise = promiseList[i];
+      promise
+        .then((success) => {
+          res[i] = success;
+        })
+        .catch((err) => reject(err));
+      run();
+    };
+    run();
+  });
+}
+```
+
+3. 100 \* 100 像素图片占多少 Kb
+   需要先看这个图片是 RGB 还是 RGBA
+   如果是 RGB 那么所占字节数为 100\*100 \* 3 / 1024 kb
+   如果是 RGBA 那么所占应该是 100 \* 100 \*4 /1024 kb
+4. TCP 与 UDP 的区别
+   TCP 是面向连接的可靠的传输协议
+
+- TCP 的可靠主要体现在
+  - 三次握手 四次挥手
+  - 滑动窗口
+  - 序列号和应答号
+  - 超时重传
+  - 拥塞控制
+  - 慢启动
+  - 快恢复
+- 1 对 1 连接
+  UDP 是面向无连接的不可靠的传输协议
+- UDP 传输更快，只管交付数据包，不保障数据包是否正确传递到目标区域
+- 1 v n 连接
+
+5. 进程和线程
+   进程
+
+- 进程是分配资源的基本单位
+- 进程通过 IPC 通信（共享内存，管道等）通信成本高
+- 进程间互不影响，一个进程的崩溃不会影响其他进程
+
+线程
+
+- 线程是接受调度的基本单位
+- 线程主要是通过共享内存通信，通信效率高成本低
+- 线程间可能相互影响，一个线程的崩溃可能会导致整个进程崩溃
+  进程和线程是 1 对多的关系
+
+6. TCP 为什么是三次握手
+   TCP 三次握手的流程是
+   1. 客户端发起握手请求 SYN，携带序列号 x
+   2. 服务端发起握手请求 SYN，携带序列号 y，并且对 x 做应答 ack = x+1;
+   3. 客户端回应 SYN 对 y 做应答 ack = y+1
+      三次握手是为了保障双方能够正常通信且不会浪费资源
+      如果是 4 次那么没必要，3 次握手互相应答就能保障建立连接的可靠
+      如果是 2 次，那么可能会导致服务器资源浪费
+
+- 比如客户端最先发起 序列号为 x 的握手请求，后续这个 x 在网络中迷失，然后客户端再发起序列号为 y 的握手请求，建立连接并且完成数据传输之后关闭第二次的握手请求，再过一段时间 x 的握手请求到了之后，服务端响应之后，就建立了连接，等待客户端的请求，然后发现客户端一直不发送消息，这时候服务端就需要等待连接超时之后才能关闭，如果是 http1.1 之后默认长连接的话，更会导致服务器的资源被浪费
+
+7. 为什么有 react fiber
+   react fiber 是一种 react 的数据结构，本质上是一个虚拟 DOM
+   这个虚拟 DOM 包含了组件实例的内容。和实例强耦合是为了支持 可中断的渲染
+   有 fiber 之后 react 可以做一些并发操作，比如中断渲染，然后根据任务优先级去调整执行任务的先后顺序
+   这个需要和 schedule 一起来做，同时还可以和 schedule 做到并发更新的效果（react18 的默认值）
+8. 前端安全相关 xss csrf
+   xss 跨站脚本攻击，有多种 存储型和反射型
+
+- 存储型
+  - 存储型攻击
+    - 攻击的目标是服务器
+    - 攻击的方式是将攻击代码存储到服务器中
+    - 攻击的效果是当用户访问服务器时，服务器会将攻击代码返回给用户
+    - 攻击的危害是用户的隐私被泄露
+      例如：用户将存在问题的代码发送给服务器，服务器没有做任何处理，后续其他用户请求会调用这个有问题的内容，导致用户被攻击
+- 反射型
+  - 反射型攻击
+    - 攻击的目标是用户
+    - 攻击的方式是将攻击代码嵌入到用户的请求中
+    - 攻击的效果是当用户访问包含攻击代码的请求时，服务器会将攻击代码返回给用户
+    - 攻击的危害是用户的隐私被泄露
+
+9.  同源和跨域
+    同源策略 是浏览器为了安全所推出的策略，同源指的是 协议 域名 端口三者相同才能认为是同源，否则认为非同源然后浏览器会拦截请求
+    跨域问题
+    因为浏览器存在同源策略，所以在非同源的情况下，浏览器会拦截请求，也就是跨域问题
+    跨域问题的解决办法
+
+    1. CORS 跨域资源共享 设置服务端设置返回头位 Access-Control-Allow-Origin \* 即可
+    2. JSONP 创建一个 script 标签，同时让这个 script 标签带有 src 和 callback 回调函数
+
+    ```js
+    function jsonp({ url, params, callback }) {
+      return new Promise((resolve, reject) => {
+        const script = document.createElement("script");
+        window[callback] = function (data) {
+          resolve(data);
+          document.body.removeChild(script);
+        };
+        params = {
+          ...params,
+          callback,
+        };
+        const querystring = Object.keys(params).map(
+          (key) => `${key}=${params[key]}`
+        );
+        script.src = `${url}?${querystring.join("&")}`;
+        document.body.appendChild(script);
+      });
+    }
+    ```
+
+    3. 代理
+       本质上是增加一个服务器，服务器和服务器之间是不存在跨域问题的，所以可以通过服务器来代理请求，然后返回数据
+       代理的实现方式有很多种，比如 nginx 反向代理，node 代理等
+
+10. JSONP 的用法
+
+```js
+function jsonP({ url, params, callback }) {
+  return new Promise((resolve, reject) => {
+    const script = document.createElement("script");
+    window[callback] = function (data) {
+      resolve(data);
+      document.body.removeChild(script);
+    };
+    params = {
+      ...params,
+      callback,
+    };
+    const querystring = Object.keys(params).map(
+      (key) => `${key}=${params[key]}`
+    );
+    script.src = `${url}?${querystring.join("&")}`;
+    document.body.appendChild(script);
+  });
+}
+```
+
+11. grid 布局了解过吗
+    grid 布局是响应式的网格布局（二维布局）
+    常用属性有
+    grid-template-columns 定义列数
+    grid-template-rows 定义行数
+    grid-gap 定义网格间距
+    grid-auto-columns 定义自动列数
+    grid-auto-rows 定义自动行数
+    grid-auto-flow 定义自动布局
+12. flex 布局交叉轴了解过吗
+    flex 布局交叉轴指的是 flex 布局中的垂直方向
+    常用属性有
+    flex-direction 定义主轴方向
+    flex-wrap 定义换行
+    justify-content 定义主轴上的对齐方式
+    align-items 定义交叉轴上的对齐方式
+    align-content 定义多行交叉轴上的对齐方式
+13. flex 布局属性
+    flex-direction 定义主轴方向
+    flex-wrap 定义换行
+    justify-content 定义主轴上的对齐方式
+    align-items 定义交叉轴上的对齐方式
+    align-content 定义多行交叉轴上的对齐方式
+    flex-grow 定义项目的放大比例
+    flex-shrink 定义项目的缩小比例
+    flex-basis 定义项目的基准值
+14. position 各种属性
+    static 静态定位
+    relative 相对定位
+    absolute 绝对定位
+    fixed 固定定位
+    sticky 粘性定位 粘性定位在最开始表现为相对定位，但是当元素滚动到一定位置时，会固定在特定位置
+15. 虚拟滚动了解过吗（虚拟列表的技术手段）
+    虚拟滚动是一种优化技术，用于在列表或网格中显示大量数据时，只渲染可见区域的内容，而不是全部渲染。
+
+## 字节 电商内容 二面
+
+1. 手写 PromiseAllSettled
+
+```js
+function allSettled(promiseList) {
+  return new Promise((resolve, reject) => {
+    const promiseArr = promiseList.map((item) =>
+      item instanceof Promise ? item : Promise.resolve(item)
+    );
+    const res = new Array(promiseList.length);
+    let count = 0;
+    promiseArr.forEach((item, index) => {
+      Promise.resolve(item)
+        .then((data) => {
+          res[index] = {
+            status: "fulfilled",
+            value: data,
+          };
+        })
+        .catch((err) => {
+          res[index] = {
+            status: "rejected",
+            reason: err,
+          };
+        })
+        .finally(() => {
+          count++;
+          if (count === promiseList.length) {
+            resolve(res);
+          }
+        });
+    });
+  });
+
+```
+
+2. 手写 urlParse（'a=1&b=2'）
+
+```js
+function urlParse(url) {
+  const query = url.split("?")[1];
+  const queryObj = {};
+  query.split("&").forEach((item) => {
+    const key = item.split("=")[0];
+    const value = item.split("=")[1];
+    queryObj[key] = value;
+  });
+  return queryObj;
+}
+```
+
+3. 事件委托原理
+   事件委托原理是利用事件冒泡的机制来实现的，事件触发之后会经历三个阶段 捕获 目标 冒泡
+
+4. 点击事件委托的子元素如何保障该事件能够被触发
+   在 react 中事件委托后，当我们点击目标元素之后会逐渐传递事件，会给实例上添加对应事件，然后手机 bubble 和 capture 事件，然后逐一触发
+5. map 和 object 的区别
+   js 中 map 是可以理解为 object 的一种，但是 map 的 key 可以是任意类型，而 object 的 key 只能是字符串或者 Symbol
+   同时 map 中封装了很多方法，比如 set get has delete clear 等
+   map 会影响 GC，因为 map 是引用类型，所以会占用内存
+6. 数组去重的方法，时间复杂度
+
+```js
+function unique(arr) {
+  return Array.from(new Set(arr));
+}
+function unique2(arr) {
+  const res = [];
+  arr.forEach((item) => {
+    if (!res.includes(item)) {
+      res.push(item);
+    }
+  });
+  return res;
+}
+function unique3(arr) {
+  const res = [];
+  arr.forEach((item) => {
+    if (res.indexOf(item) === -1) {
+      res.push(item);
+    }
+  });
+  return res;
+}
+function unique4(arr) {
+  const res = [];
+  arr.forEach((item) => {
+    if (res.indexOf(item) === -1) {
+      res.push(item);
+    }
+  });
+  return res;
+}
+```
+
+7. 403 状态码的意思
+   403 是禁止访问，也就是资源存在但是没权限访问
+8. http 状态码
+
+- 1xx
+  - 100 继续
+  - 101 切换协议
+- 2xx
+  - 200 成功
+  - 201 创建成功
+  - 202 已接受
+  - 204 无内容
+- 3xx
+  - 301 永久重定向
+  - 302 临时重定向
+- 4xx
+  - 400 客户端错误（一般是传参错误）
+  - 401 未授权
+  - 403 禁止访问
+  - 404 未找到
+- 5xx
+  - 500 服务器错误
+  - 501 未实现
+  - 502 网关错误
+  - 503 服务不可用
+  - 504 网关超时
+
+9. 讲讲 301 和 302
+10. http 的请求方式
+    GET POST PUT DELETE HEAD
+11. 复杂请求
+    请求分为简单请求和复杂请求，非简单请求就是复杂请求，复杂请求会发起预检请求
+    简单请求
+    简单请求的条件
+    1. 请求方法是 GET POST HEAD
+    2. 请求头的 Content-Type 是 application/x-www-form-urlencoded multipart/form-data text/plain
+    3. 请求头的 Accept 是 _/_ 或者 text/\*
+12. option 请求的返回值是什么
+    option 请求的返回值是 204 无内容
+13. 孤岛架构的原理
+    孤岛架构的原理是将一个应用拆分成多个子应用，每个子应用都有自己的路由和状态管理，子应用之间通过事件总线来通信
+14. decodeURI 和 decodeURIComponent 的区别
+15. addEventListener 有几个参数和作用
+    addEventListener 有三个参数，分别是事件类型，事件处理函数，是否使用捕获阶段
+    1. 事件类型 比如 click mouseover 等
+    2. 事件处理函数 当事件触发时调用的函数
+    3. 是否使用捕获阶段 默认为 false 表示使用冒泡阶段
