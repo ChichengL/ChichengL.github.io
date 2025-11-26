@@ -4,21 +4,20 @@
     "type": "split",
     "children": [
       {
-        "id": "582a13990ffb9cc6",
+        "id": "d6d621657fdb56a0",
         "type": "tabs",
         "children": [
           {
-            "id": "b969f4ecc7960b7e",
+            "id": "f2cba3f8d184dff3",
             "type": "leaf",
             "state": {
-              "type": "markdown",
+              "type": "bases",
               "state": {
-                "file": "docs/blog/InterviewRelate/CollectedInterviews/bytedance-answer.md",
-                "mode": "source",
-                "source": false
+                "file": "未命名 1.base",
+                "viewName": "表格"
               },
-              "icon": "lucide-file",
-              "title": "bytedance-answer"
+              "icon": "lucide-table",
+              "title": "未命名 1"
             }
           }
         ]
@@ -53,7 +52,7 @@
             "state": {
               "type": "search",
               "state": {
-                "query": "",
+                "query": "浏览器渲染",
                 "matchingCase": false,
                 "explainSearch": false,
                 "collapseAll": false,
@@ -127,7 +126,7 @@
               "type": "tag",
               "state": {
                 "sortOrder": "frequency",
-                "useHierarchy": true,
+                "useHierarchy": false,
                 "showSearch": false,
                 "searchQuery": ""
               },
@@ -141,13 +140,13 @@
             "state": {
               "type": "outline",
               "state": {
-                "file": "docs/blog/InterviewRelate/CollectedInterviews/bytedance-answer.md",
+                "file": "未命名 1.base",
                 "followCursor": false,
                 "showSearch": false,
                 "searchQuery": ""
               },
               "icon": "lucide-list",
-              "title": "bytedance-answer 的大纲"
+              "title": "未命名 1 的大纲"
             }
           }
         ],
@@ -169,13 +168,32 @@
       "obsidian-excalidraw-plugin:新建绘图文件": false
     }
   },
-  "active": "b969f4ecc7960b7e",
+  "active": "f2cba3f8d184dff3",
   "lastOpenFiles": [
-    "docs/blog/InterviewRelate/2025.8/小红书校招——社区前端.md",
-    "docs/blog/InterviewRelate/CollectedInterviews/bytedance-question.md",
-    "docs/blog/InterviewRelate/CollectedInterviews/bytedance-answer.md",
-    "docs/blog/FrontEnd/Framework/Vue-React/diff.md",
+    "未命名.base",
+    "docs/blog/InterviewRelate/2025.3/飞书meego.md",
     "docs/blog/InterviewRelate/2025.8/美团校招——基建侧.md",
+    "docs/blog/InterviewRelate/CollectedInterviews/bytedance-answer.md",
+    "docs/blog/InterviewRelate/2024.5/5月份面试总结.md",
+    "docs/blog/InterviewRelate/2024.8/抖音直播面试准备.md",
+    "docs/blog/InterviewRelate/2025.8/小红书校招——社区前端.md",
+    "未命名 1.base",
+    "docs/blog/InterviewRelate/2025.8/了解workItem.md",
+    "docs/blog/InterviewRelate/2025.9/微信游戏.md",
+    "docs/blog/ComputerBasis/network.md",
+    "docs/blog/ComputerBasis/DesignRule.md",
+    "docs/blog/InterviewRelate/2024.5/cxh2024-5-9——网易.md",
+    "docs/blog/InterviewRelate/CollectedInterviews/bytedance-question.md",
+    "docs/blog/InterviewRelate/CollectedInterviews/bilibili-question.md",
+    "docs/blog/FrontEnd/RelatedLanguages/浏览器渲染原理简记.md",
+    "docs/blog/InterviewRelate/2024.8/简历剖析：2024.8.md",
+    "docs/experience/myLife/基础复习.md",
+    "docs/blog/InterviewRelate/2025.9/实习总结.md",
+    "docs/blog/InterviewRelate/2025.8/陈双彬Meego实习产出.md",
+    "docs/blog/InterviewRelate/2025.8/陈双彬Meego实习产出.mdx",
+    "docs/blog/InterviewRelate/2025.8/2025.8简历剖析.md",
+    "docs/blog/InterviewRelate/2025.9",
+    "docs/blog/FrontEnd/Framework/Vue-React/diff.md",
     "docs/index.mdx",
     "docs/blog/FrontEnd/Framework/React/React三大基石.md",
     "docs/blog/InterviewRelate/2024.8/cxh——国际化前端.md",
@@ -183,10 +201,7 @@
     "docs/blog/index.mdx",
     "docs/blog/ComputerBasis/OS~.md",
     "docs/blog/ComputerBasis/OS.md",
-    "docs/blog/ComputerBasis/Untitled.md",
-    "docs/blog/FrontEnd/PerformanceOptimization/UrlToDisplay.md",
     "docs/blog/InterviewRelate/otherInterview/_meta.json",
-    "docs/blog/InterviewRelate/otherInterview/xhs-tencent.md",
     "docs/blog/InterviewRelate/otherInterview",
     "docs/blog/FrontEnd/RelatedLanguages/images/Browser/image-20231025103609811.png",
     "docs/blog/FrontEnd/RelatedLanguages/images/Browser/image-20231023195946986.png",
@@ -196,26 +211,9 @@
     "docs/blog/FrontEnd/RelatedLanguages/Browser/image-20231023195946986.png",
     "docs/blog/FrontEnd/RelatedLanguages/Browser/1277f342174b23f9442d3b27016d7980.png",
     "docs/blog/FrontEnd/RelatedLanguages/Browser",
-    "doc_build/static/search_index.a18fe103.json",
-    "doc_build/static",
-    "docs/blog/FrontEnd/RelatedLanguages/浏览器渲染原理简记.md",
-    "doc_build/static/search_index.d174a748.json",
-    "doc_build/static/search_index.e8388ca5.json",
-    "docs/blog/InterviewRelate/2024.8/简历剖析：2024.8.md",
-    "docs/blog/InterviewRelate/2024.8/抖音直播一面（寄.md",
-    "docs/blog/InterviewRelate/2024.8/抖音直播面试准备.md",
-    "docs/blog/InterviewRelate/2024.5/腾讯面试.md",
-    "docs/blog/InterviewRelate/2024.5/面试题.md",
-    "docs/blog/InterviewRelate/2024.5/抖音电商前端——陈双彬.md",
-    "docs/blog/InterviewRelate/2024.5/24-5-13 ybf 快手 24-5-14美团.md",
-    "docs/blog/InterviewRelate/2024.5/24-5-13  cxh xhs2面.md",
-    "docs/blog/InterviewRelate/2024.5/24-3-13面试复盘.md",
-    "docs/blog/InterviewRelate/2024.5/5月份面试总结.md",
-    "docs/blog/FrontEnd/Framework/vue3About/Vue3源码学习.md",
     "doc_build/static/image/image-20240122213028202.c5386890.png",
     "doc_build/static/image/img_js_210.7001bec8.png",
     "doc_build/static/image/image-20240307131031495.34a43188.png",
-    "doc_build/static/image/image-20240307131638606.c3062e13.png",
-    "docs/blog/FrontEnd/PerformanceOptimization/Concurrency.md"
+    "doc_build/static/image/image-20240307131638606.c3062e13.png"
   ]
 }

@@ -1,15 +1,15 @@
 # 一、基本信息
 
-| **姓名**         | @陈双彬                                                                                                                                                             |
-| ---------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------- | --- |
-| **教育经历**     | 西南石油大学 物联网工程 26 届本科                                                                                                                                   |
-| **实习经历**     |                                                                                                                                                                     |
-| **字节入职时间** | 2024 年 10 月 21 日入职字节，总计实习出勤 181 工作日                                                                                                                | \   |
-|                  | 2025 年 4 月 7 日入职 Meego，总计实习出勤 81 工作日                                                                                                                 | \   |
-|                  |                                                                                                                                                                     | \   |
-|                  | > 出勤数据截止于 2025 年 08 月 05 日                                                                                                                                |
-| **工作职责**     | 负责 Meego 行业专版的前端开发工作，包括泳道图、计算角色、交付物等功能模块的设计与实现；参与需求分析和技术方案设计；与产品、设计和后端团队协作，确保功能的高质量交付 |
-| **Mentor**       | @任为                                                                                                                                                               |
+| **姓名**     | @陈双彬                                                                                  |     |
+| ---------- | ------------------------------------------------------------------------------------- | --- |
+| **教育经历**   | 西南石油大学 物联网工程 26 届本科                                                                   |     |
+| **实习经历**   |                                                                                       |     |
+| **字节入职时间** | 2024 年 10 月 21 日入职字节，总计实习出勤 181 工作日                                                   | \   |
+|            | 2025 年 4 月 7 日入职 Meego，总计实习出勤 81 工作日                                                  | \   |
+|            |                                                                                       | \   |
+|            | > 出勤数据截止于 2025 年 08 月 05 日                                                            |     |
+| **工作职责**   | 负责 Meego 行业专版的前端开发工作，包括泳道图、计算角色、交付物等功能模块的设计与实现；参与需求分析和技术方案设计；与产品、设计和后端团队协作，确保功能的高质量交付 |     |
+| **Mentor** | @任为                                                                                   |     |
 
 # 二、业务理解
 
@@ -88,8 +88,6 @@ PPM 是 Meego 近几年最重要的业务发展机会之一，通过深度探索
 • 计算角色增强
 • 计算字段扩展
 
-<br />
-
 ---
 
 ## 关键产出
@@ -161,18 +159,18 @@ PPM 是 Meego 近几年最重要的业务发展机会之一，通过深度探索
 
    ```TypeScript
    export const phaseBarHeight = 200 - 56;
-
+   
    /**
     * 构建在阶段进度条上的里程碑渲染/布局数据
     */
-
+   
    /**
     * 检测里程碑节点是否重叠的阈值（像素）
     * 当两个节点的水平距离小于此值时，认为它们重叠
     * 使用图标大小的1.2倍作为判断标准
     */
    const MILESTONE_OVERLAP_THRESHOLD = milestoneStyles.iconSize * 1.2;
-
+   
    /**
     * 构建在阶段进度条上的里程碑渲染/布局数据
     * 包含检测和处理重叠节点的逻辑
@@ -202,10 +200,10 @@ PPM 是 Meego 近几年最重要的业务发展机会之一，通过深度探索
          width: phase.width,
          progressRatio,
        });
-
+   
        return bottomRight.y - topRight.y;
      };
-
+   
      /**
       * 查找里程碑所属的阶段
       */
@@ -229,12 +227,12 @@ PPM 是 Meego 近几年最重要的业务发展机会之一，通过深度探索
          .with(MilestoneCategory.Stage, () => MilestoneLevel.L1)
          .with(MilestoneCategory.Key, () => MilestoneLevel.L2)
          .otherwise(() => MilestoneLevel.L3);
-
+   
        const axisStartLeft = unitWidth * node.axisStartDay;
        let phase: PhaseData | null = findPhaseForMilestone(axisStartLeft, phasesList);
-
+   
        const gapTopBottom = calculateGapTopBottom(phase, axisStartLeft, unitWidth);
-
+   
        return {
          key: node.nodeUUID,
          status: getNodeStatus(node),
@@ -252,31 +250,31 @@ PPM 是 Meego 近几年最重要的业务发展机会之一，通过深度探索
       */
      const calculateGapTopBottom = (phase: PhaseData | null, axisStartLeft: number, unitWidth: number) => {
        if (!phase) return 28;
-
+   
        const progressRatio = (axisStartLeft - phase.left) / phase.width;
        const phaseHeight = getPhaseBlockHeightInProgress({ phase, progressRatio });
-
+   
        return phaseBarHeight / 2 - phaseHeight / 2 - milestoneStyles.height - milestoneStyles.paddingBlock;
      };
-
+   
      // 第一步：计算每个节点的基本位置信息
      const baseMilestones = milestonesInfos.map(calculateBaseMilestone);
-
+   
      // 第二步：按left值排序，便于检测重叠
      const sortedMilestones = [...baseMilestones].sort((a, b) => a.left - b.left);
-
+   
      // 第三步：检测重叠并分组
      // 将相邻且位置接近的节点归为一组，以便后续处理
      const groups: Array<Array<(typeof sortedMilestones)[0]>> = [];
      let currentGroup: Array<(typeof sortedMilestones)[0]> = [];
-
+   
      sortedMilestones.forEach((milestone, index) => {
        if (index === 0) {
          // 第一个节点直接加入当前组
          currentGroup.push(milestone);
          return;
        }
-
+   
        const prevMilestone = sortedMilestones[index - 1];
        // 检查当前节点与前一个节点是否重叠
        // 考虑节点图标的宽度，当两个节点的中心点距离小于阈值时，认为它们重叠
@@ -290,26 +288,26 @@ PPM 是 Meego 近几年最重要的业务发展机会之一，通过深度探索
          }
          currentGroup = [milestone];
        }
-
+   
        // 处理最后一个节点
        if (index === sortedMilestones.length - 1 && currentGroup.length > 0) {
          groups.push([...currentGroup]);
        }
      });
-
+   
      /**
       * 第四步：处理重叠组，生成MilestoneGroup所需数据
       * 创建最终的里程碑节点列表，包括单个节点和重叠组
       */
      const finalMilestones: PhaseBarMilestoneItem[] = [];
-
+   
      groups.forEach(group => {
        if (group.length <= 1) {
          // 单个节点直接加入最终列表
          finalMilestones.push(...group);
          return;
        }
-
+   
        // 对于重叠组，创建一个特殊的节点，表示整个组
        const groupNode: PhaseBarMilestoneGroup = {
          key: `group-${group[0].key}`, // 使用组内第一个节点的key作为组的key前缀
@@ -327,11 +325,11 @@ PPM 是 Meego 近几年最重要的业务发展机会之一，通过深度探索
            bottom: node.bottom,
          })),
        };
-
+   
        // 将组节点加入最终列表
        finalMilestones.push(groupNode);
      });
-
+   
      return finalMilestones;
    };
    ```
@@ -461,7 +459,7 @@ const getNewRoleName = async ({
      delivery: new DeliveryWorkItemStrategy(),
      default: new DefaultWorkItemStrategy(),
    };
-
+   
    export function getStrategy(typeKey: string): WorkItemTypeStrategy {
      return strategies[typeKey] || strategies.default;
    }

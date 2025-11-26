@@ -148,6 +148,8 @@ const TopComponent = () => {
 export default TopComponent;
 ```
 
+
+
 23. useState 是同步还是异步
     1.  大部分情况下是异步的，少部分情况下是同步的，同步的情况下包括,flushSync 和 setTimeout 造成的撕裂——在 setTimeout 的回调函数中，setState 是同步的
 24. react 执行顺序 1. layoutEffect 和 effect 的区别 2. 为什么不能在 if-else 中调用 hook 1. 不要在循环、条件语句或者嵌套函数中调用 Hook，只能在 React 函数组件的顶层或者自定义 Hook 里调用 Hook。 2. React 依靠调用顺序来追踪 Hooks hooks 在 react 中是放在 fiber 的属性上面以链表的形式存在的，如果放在循环或者分支里面可能会导致 hook 的调用顺序出问题 3. hook 的结构是什么样子的。

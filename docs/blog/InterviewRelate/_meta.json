@@ -29,13 +29,6 @@
   },
   {
     "type": "dir",
-    "name": "2024.12",
-    "label": "2024.12",
-    "collapsible": true,
-    "collapsed": true
-  },
-  {
-    "type": "dir",
     "name": "2025.3",
     "label": "2025.3",
     "collapsible": true,
